@@ -21,7 +21,7 @@ It exercises every pattern in the book with the simplest possible data:
 | Methodology / standards lookups | Knowledge Retrieval (RAG) |
 | Reduction targets | Goal Setting & Monitoring |
 | Approve an action/report before it's "final" | Human-in-the-Loop |
-| Specialists: analyst / accountant / advisor / reporter | Multi-Agent + A2A |
+| Specialists: analyst / accountant / advisor / reporter | Multi-Agent Collaboration |
 | Remember the facility in focus | Memory Management |
 | Missing / late data | Exception Handling & Recovery |
 | Traces + scoring | Evaluation & Monitoring |

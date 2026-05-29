@@ -49,7 +49,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 ### Phase 6 — Multi-agent
 - 🧱 Split into specialist skills/agents — Analyst, Carbon Accountant, Advisor,
   Reporter — coordinated by an Orchestrator.
-- 📖 **Multi-Agent Collaboration, Inter-Agent Communication (A2A), Prioritization**.
+- 📖 **Multi-Agent Collaboration, Prioritization**.
 
 ### Phase 7 — Safety, HITL, robustness
 - 🧱 Approval step before a report/action is "final"; graceful handling of
