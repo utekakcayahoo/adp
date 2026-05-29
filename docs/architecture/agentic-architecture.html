@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADP · Agentic AI Architecture</title>
+<style>
+  :root{
+    --ink:#14241b; --muted:#5d6f64; --line:#dde6e0; --paper:#f4f7f5; --card:#fff;
+    --core:#2563b6;  --core-bg:#e7effb;     /* orchestration / control flow */
+    --tool:#0e7c86;  --tool-bg:#e3f3f4;      /* tools / context / knowledge  */
+    --ops:#b9791a;   --ops-bg:#fbf1de;       /* safety / memory / ops        */
+    --green:#1f8a4c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.45;padding:32px 20px 56px}
+  .wrap{max-width:1120px;margin:0 auto}
+  header.top{border-left:6px solid var(--core);padding:4px 0 4px 16px;margin-bottom:14px}
+  h1{font-size:25px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:15px;margin:0}
+
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:10px 0 4px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .d-core{background:var(--core)} .d-tool{background:var(--tool)} .d-ops{background:var(--ops)}
+
+  .layout{display:flex;gap:14px;align-items:stretch;margin-top:14px}
+  .stack{flex:1;display:flex;flex-direction:column;gap:0}
+  .layer{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;box-shadow:0 1px 2px rgba(20,36,27,.05)}
+  .layer .lname{font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;margin-bottom:10px}
+  .arrow{text-align:center;color:var(--core);font-size:18px;margin:5px 0}
+  .arrow small{color:var(--muted);font-size:11px}
+
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .box{flex:1 1 0;min-width:150px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fbfdfc}
+  .box h4{margin:0 0 6px;font-size:13.5px}
+  .box p{margin:0;font-size:12px;color:var(--muted)}
+  .box.lead{border-top:3px solid var(--core)}
+  .box.skill{border-top:3px solid var(--tool)}
+
+  .pills{margin-top:8px;line-height:1.9}
+  .p{display:inline-block;font-size:10.5px;font-weight:700;border-radius:20px;padding:2px 8px;margin:0 4px 0 0}
+  .p-core{background:var(--core-bg);color:var(--core)}
+  .p-tool{background:var(--tool-bg);color:var(--tool)}
+  .p-ops{background:var(--ops-bg);color:var(--ops)}
+
+  .mcp{border:1px dashed var(--tool);background:var(--tool-bg)}
+  .tool{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#fff;
+    border:1px solid #bfe0e2;color:var(--tool);border-radius:8px;padding:6px 10px;margin:4px 6px 0 0;display:inline-block}
+  .data{background:#101f17;color:#dfeee6;border-radius:12px}
+  .data .lname{color:#9fc7b3}
+  .data .box{background:#1c3327;border-color:#2c4b39;color:#dfeee6}
+  .data .box h4{color:#fff}
+  .data .box p{color:#a9cdba}
+
+  /* right rail: observability */
+  .rail{width:210px;flex:0 0 210px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:14px 14px;display:flex;flex-direction:column}
+  .rail .lname{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+  .rail .item{font-size:12px;color:var(--muted);border-left:3px solid var(--ops);padding:4px 0 4px 10px;margin-bottom:10px}
+  .rail .item b{color:var(--ink)}
+  footer{margin-top:22px;color:var(--muted);font-size:12px;text-align:center}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:.92em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Facility Energy &amp; Carbon Co-pilot — Agentic AI Architecture</h1>
+    <p class="sub">Skills-first agent on the Claude Agent SDK, talking to Databricks data through MCP. Tags show which book pattern each part teaches.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="dot d-core"></i> Orchestration / control flow</span>
+    <span><i class="dot d-tool"></i> Tools · context · knowledge</span>
+    <span><i class="dot d-ops"></i> Safety · memory · ops</span>
+  </div>
+
+  <div class="layout">
+    <!-- MAIN STACK -->
+    <div class="stack">
+
+      <!-- L0 EXPERIENCE -->
+      <div class="layer">
+        <div class="lname">Layer 0 · Experience</div>
+        <div class="row">
+          <div class="box"><h4>🖥️ Databricks App (chat UI)</h4>
+            <p>Where the sustainability team talks to the co-pilot. The production face.</p>
+            <div class="pills"><span class="p p-ops">Human-in-the-Loop</span></div></div>
+          <div class="box"><h4>⌨️ Claude Code (terminal)</h4>
+            <p>Our build &amp; debug cockpit during development.</p></div>
+        </div>
+      </div>
+
+      <div class="arrow">▼ <small>user request</small></div>
+
+      <!-- L1 AGENT -->
+      <div class="layer">
+        <div class="lname">Layer 1 · Agent runtime — Claude Agent SDK (skills-first)</div>
+        <div class="row">
+          <div class="box lead" style="flex:1 1 100%"><h4>🧭 Orchestrator</h4>
+            <p>Reads the request, picks the right skill, plans multi-step work, tracks the goal.</p>
+            <div class="pills">
+              <span class="p p-core">Routing</span>
+              <span class="p p-core">Planning</span>
+              <span class="p p-core">Goal Setting &amp; Monitoring</span>
+              <span class="p p-ops">Memory</span>
+            </div></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="box skill"><h4>📊 Data Analyst</h4>
+            <p>Pulls energy use; runs several facilities in parallel.</p>
+            <div class="pills"><span class="p p-tool">Tool Use</span><span class="p p-core">Parallelization</span></div></div>
+          <div class="box skill"><h4>🧮 Carbon Accountant</h4>
+            <p>Applies factors → tCO₂e; double-checks the math.</p>
+            <div class="pills"><span class="p p-tool">Tool Use</span><span class="p p-ops">Reflection</span></div></div>
+          <div class="box skill"><h4>💡 Advisor</h4>
+            <p>Ranks actions by impact &amp; effort.</p>
+            <div class="pills"><span class="p p-core">Reasoning</span><span class="p p-core">Prioritization</span></div></div>
+          <div class="box skill"><h4>📑 Reporter</h4>
+            <p>Chains steps into an ESG narrative, grounded in standards.</p>
+            <div class="pills"><span class="p p-core">Prompt Chaining</span><span class="p p-tool">RAG</span></div></div>
+        </div>
+        <div class="pills" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
+          <b style="font-size:11px;color:var(--muted)">CROSS-CUTTING:</b>
+          <span class="p p-core">Multi-Agent Collaboration</span>
+          <span class="p p-core">Inter-Agent Comms (A2A)</span>
+          <span class="p p-ops">Guardrails / Safety</span>
+          <span class="p p-ops">Exception Handling &amp; Recovery</span>
+          <span class="p p-ops">Learning &amp; Adaptation</span>
+        </div>
+      </div>
+
+      <div class="arrow">▼ <small>tool calls (Model Context Protocol)</small></div>
+
+      <!-- L2 MCP -->
+      <div class="layer mcp">
+        <div class="lname">Layer 2 · MCP tool server — <code>adp_mcp</code> (hosted on Databricks)</div>
+        <p style="margin:0 0 6px;font-size:12px;color:var(--muted)">The agent never touches the database directly. It calls typed tools — the contract between brains and data.</p>
+        <span class="tool">list_facilities()</span>
+        <span class="tool">query_energy(facility, period)</span>
+        <span class="tool">compute_emissions(facility, period, scope)</span>
+        <span class="tool">target_progress(facility)</span>
+        <span class="tool">search_standards(query)</span>
+        <div class="pills" style="margin-top:8px"><span class="p p-tool">Model Context Protocol</span><span class="p p-tool">Tool Use</span></div>
+      </div>
+
+      <div class="arrow">▼ <small>SQL / vector search</small></div>
+
+      <!-- L3 DATA -->
+      <div class="layer data">
+        <div class="lname">Layer 3 · Data &amp; knowledge — Databricks (synthetic, <code>adp</code>)</div>
+        <div class="row">
+          <div class="box"><h4>🗄️ Unity Catalog tables</h4>
+            <p>adp_facilities · adp_energy_readings · adp_emission_factors · adp_targets · adp_weather</p></div>
+          <div class="box"><h4>⚙️ Jobs · <code>adp_data_generator</code></h4>
+            <p>Batch seed + recurring hourly appends (our streaming-ish feed).</p></div>
+          <div class="box"><h4>🔎 Vector Search · <code>adp_standards_index</code></h4>
+            <p>GHG Protocol, methodology, ESG template, anomaly playbook — for RAG.</p>
+            <div class="pills"><span class="p p-tool">Knowledge Retrieval</span></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT RAIL: OBSERVABILITY -->
+    <div class="rail">
+      <div class="lname">Cross-layer · Observability</div>
+      <div class="item"><b>📈 MLflow tracing</b><br>Every run, every tool call, captured in experiment <code>4115298422633092</code>.</div>
+      <div class="item"><b>✅ Evaluation</b><br>Score answers: are numbers tool-backed? on-target? complete?</div>
+      <div class="item"><b>♻️ Resource-aware</b><br>Cache, batch, pick the right model per step.</div>
+      <div class="pills"><span class="p p-ops">Evaluation &amp; Monitoring</span></div>
+    </div>
+  </div>
+
+  <footer>ADP · Built in phases — see <code>docs/roadmap.md</code>. Business view: <code>business-architecture.html</code>.</footer>
+</div>
+</body>
+</html>

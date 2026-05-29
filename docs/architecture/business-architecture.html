@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADP · Business Architecture</title>
+<style>
+  :root{
+    --ink:#14241b; --muted:#5d6f64; --line:#dde6e0;
+    --paper:#f4f7f5; --card:#ffffff;
+    --green:#1f8a4c; --green-bg:#e8f5ee;
+    --teal:#0e7c86;  --teal-bg:#e3f3f4;
+    --amber:#b9791a; --amber-bg:#fbf1de;
+    --slate:#3c5a73; --slate-bg:#e9f0f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.45;padding:32px 20px 56px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header.top{border-left:6px solid var(--green);padding:4px 0 4px 16px;margin-bottom:8px}
+  h1{font-size:25px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:15px;margin:0}
+  .kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);font-weight:700;margin:26px 0 10px}
+  .arrow{text-align:center;color:var(--green);font-size:20px;line-height:1;margin:6px 0}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;flex:1 1 0;min-width:200px;box-shadow:0 1px 2px rgba(20,36,27,.04)}
+  .card h3{margin:0 0 6px;font-size:15px}
+  .card p{margin:0;font-size:13px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;
+    padding:2px 9px;margin-bottom:8px}
+  .t-green{background:var(--green-bg);color:var(--green)}
+  .t-teal{background:var(--teal-bg);color:var(--teal)}
+  .t-amber{background:var(--amber-bg);color:var(--amber)}
+  .t-slate{background:var(--slate-bg);color:var(--slate)}
+  .goal{background:linear-gradient(90deg,var(--green-bg),#fff);
+    border:1px dashed var(--green);border-radius:12px;padding:14px 18px;text-align:center}
+  .goal b{color:var(--green)}
+  .cap{border-top:3px solid var(--teal)}
+  .data{background:#101f17;color:#dfeee6;border-radius:14px;padding:18px 20px}
+  .data h3{color:#fff;margin:0 0 10px;font-size:14px;letter-spacing:.04em}
+  .pill{display:inline-block;background:#1c3327;border:1px solid #2c4b39;color:#cfe9da;
+    border-radius:8px;padding:6px 10px;margin:4px 6px 0 0;font-size:12px;font-family:ui-monospace,Menlo,monospace}
+  .pill.know{background:#13302e;border-color:#1f4a47;color:#cdeeea}
+  .kpis .card{text-align:center}
+  .kpis .num{font-size:22px;font-weight:800;color:var(--green)}
+  .kpis .lbl{font-size:12px;color:var(--muted)}
+  footer{margin-top:26px;color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Facility Energy &amp; Carbon Co-pilot — Business Architecture</h1>
+    <p class="sub">Who it serves, the decisions it supports, and the value it returns — on a foundation of facility data.</p>
+  </header>
+
+  <div class="goal">
+    🎯 <b>North star:</b> hit the organization's emissions-reduction target
+    (e.g. <b>−50% by 2030</b>) — by making every facility's carbon visible,
+    explainable, and actionable.
+  </div>
+
+  <div class="kicker">1 · Who we serve</div>
+  <div class="row">
+    <div class="card"><span class="tag t-green">Primary</span>
+      <h3>Sustainability Manager</h3>
+      <p>Owns the portfolio target. Asks: "Are we on track? Which sites are dragging us down?"</p></div>
+    <div class="card"><span class="tag t-teal">Operator</span>
+      <h3>Facility Manager</h3>
+      <p>Runs one site. Asks: "Why did my building spike? What should I fix first?"</p></div>
+    <div class="card"><span class="tag t-slate">Audience</span>
+      <h3>Executive / ESG Reporting</h3>
+      <p>Needs a credible summary with an audit trail. Asks: "Give me the quarterly report."</p></div>
+  </div>
+
+  <div class="arrow">▼</div>
+  <div class="kicker">2 · What the co-pilot does (business capabilities)</div>
+  <div class="row">
+    <div class="card cap"><h3>📊 Measure &amp; Baseline</h3>
+      <p>Turn kWh of electricity &amp; gas into <b>tCO₂e</b> (Scope 1 + Scope 2) per facility, per period.</p></div>
+    <div class="card cap"><h3>🎯 Track vs Target</h3>
+      <p>Compare current trajectory against reduction targets — org-wide and per site.</p></div>
+    <div class="card cap"><h3>🔍 Diagnose</h3>
+      <p>Explain spikes &amp; anomalies using weather and usage patterns.</p></div>
+    <div class="card cap"><h3>💡 Recommend</h3>
+      <p>Prioritized actions to cut emissions and cost, biggest lever first.</p></div>
+    <div class="card cap"><h3>📑 Report</h3>
+      <p>Audit-ready, GHG/ESG-aligned narrative — generated on request.</p></div>
+  </div>
+
+  <div class="arrow">▼</div>
+  <div class="kicker">3 · Value returned</div>
+  <div class="row kpis">
+    <div class="card"><div class="num">tCO₂e</div><div class="lbl">tracked &amp; attributable</div></div>
+    <div class="card"><div class="num">% to target</div><div class="lbl">always-current progress</div></div>
+    <div class="card"><div class="num">kWh / $ saved</div><div class="lbl">from acted-on advice</div></div>
+    <div class="card"><div class="num">hours → minutes</div><div class="lbl">reporting effort</div></div>
+    <div class="card"><div class="num">audit-ready</div><div class="lbl">every number traceable</div></div>
+  </div>
+
+  <div class="arrow">▲ powered by ▲</div>
+  <div class="kicker">4 · Data &amp; knowledge foundation (synthetic, in Databricks)</div>
+  <div class="data">
+    <h3>OPERATIONAL DATA — Unity Catalog tables (<code>adp_</code>)</h3>
+    <span class="pill">adp_facilities</span>
+    <span class="pill">adp_energy_readings</span>
+    <span class="pill">adp_emission_factors</span>
+    <span class="pill">adp_targets</span>
+    <span class="pill">adp_weather</span>
+    <h3 style="margin-top:14px">KNOWLEDGE FOR RAG — <code>adp_standards_index</code></h3>
+    <span class="pill know">GHG Protocol (Scope 1/2)</span>
+    <span class="pill know">Emission-factor methodology</span>
+    <span class="pill know">ESG report template</span>
+    <span class="pill know">Anomaly playbook</span>
+  </div>
+
+  <footer>ADP · Locked use case — see <code>docs/use-case.md</code>. The agentic system that delivers these capabilities is in <code>agentic-architecture.html</code>.</footer>
+</div>
+</body>
+</html>
