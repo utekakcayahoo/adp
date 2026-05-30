@@ -72,7 +72,7 @@
 
   <header class="top">
     <h1>Facility Energy &amp; Carbon Co-pilot — Agentic AI Architecture</h1>
-    <p class="sub">Skills-first agent on the Claude Agent SDK, talking to Databricks data through MCP. Tags show which book pattern each part teaches.</p>
+    <p class="sub">Skills-first agent packaged as a Claude <b>plugin</b>, run by the end user in <b>Claude Cowork</b>, reaching Databricks data through a remote <b>MCP</b> server. Tags show which book pattern each part teaches.</p>
   </header>
 
   <div class="legend">
@@ -89,11 +89,11 @@
       <div class="layer">
         <div class="lname">Layer 0 · Experience</div>
         <div class="row">
-          <div class="box"><h4>🖥️ Databricks App (chat UI)</h4>
-            <p>Where the sustainability team talks to the co-pilot. The production face.</p>
+          <div class="box"><h4>💼 Claude Cowork (Claude Desktop)</h4>
+            <p>Where the sustainability team installs the plugin and works with the co-pilot. The production face — no terminal, no web app.</p>
             <div class="pills"><span class="p p-ops">Human-in-the-Loop</span></div></div>
           <div class="box"><h4>⌨️ Claude Code (terminal)</h4>
-            <p>Our build &amp; debug cockpit during development.</p></div>
+            <p>Where <em>we</em> build &amp; test the plugin — skills, MCP, sub-agents — during development.</p></div>
         </div>
       </div>
 
@@ -101,7 +101,8 @@
 
       <!-- L1 AGENT -->
       <div class="layer">
-        <div class="lname">Layer 1 · Agent runtime — Claude Agent SDK (skills-first)</div>
+        <div class="lname">Layer 1 · Agent — a Claude plugin in Cowork (skills-first)</div>
+        <p style="margin:0 0 10px;font-size:12px;color:var(--muted)">One installable plugin = <code>skills/</code> (the behaviors below) + <code>agents/</code> (sub-agents) + <code>commands/</code> + a bundled <code>.mcp.json</code>. No Agent SDK, no DAGs.</p>
         <div class="row">
           <div class="box lead" style="flex:1 1 100%"><h4>🧭 Orchestrator</h4>
             <p>Reads the request, picks the right skill, plans multi-step work, tracks the goal.</p>
@@ -135,12 +136,12 @@
         </div>
       </div>
 
-      <div class="arrow">▼ <small>tool calls (Model Context Protocol)</small></div>
+      <div class="arrow">▼ <small>tool calls over HTTPS (Model Context Protocol)</small></div>
 
       <!-- L2 MCP -->
       <div class="layer mcp">
-        <div class="lname">Layer 2 · MCP tool server — <code>adp_mcp</code> (hosted on Databricks)</div>
-        <p style="margin:0 0 6px;font-size:12px;color:var(--muted)">The agent never touches the database directly. It calls typed tools — the contract between brains and data.</p>
+        <div class="lname">Layer 2 · Remote MCP server — <code>adp_mcp</code> (Databricks App, HTTPS)</div>
+        <p style="margin:0 0 6px;font-size:12px;color:var(--muted)">The agent never touches the database directly — it calls typed tools over HTTPS (OAuth), shipped <b>inside the plugin's <code>.mcp.json</code></b>. The contract between brains and data.</p>
         <span class="tool">list_facilities()</span>
         <span class="tool">query_energy(facility, period)</span>
         <span class="tool">compute_emissions(facility, period, scope)</span>
@@ -170,7 +171,7 @@
     <!-- RIGHT RAIL: OBSERVABILITY -->
     <div class="rail">
       <div class="lname">Cross-layer · Observability</div>
-      <div class="item"><b>📈 MLflow tracing</b><br>Every run, every tool call, captured in experiment <code>4115298422633092</code>.</div>
+      <div class="item"><b>📈 MLflow tracing</b><br>Tool calls logged from the Databricks MCP server to experiment <code>4115298422633092</code>. Cowork doesn't export model reasoning — tracing lives at the tool boundary + hooks.</div>
       <div class="item"><b>✅ Evaluation</b><br>Score answers: are numbers tool-backed? on-target? complete?</div>
       <div class="item"><b>♻️ Resource-aware</b><br>Cache, batch, pick the right model per step.</div>
       <div class="pills"><span class="p p-ops">Evaluation &amp; Monitoring</span></div>
