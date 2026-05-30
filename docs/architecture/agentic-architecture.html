@@ -171,7 +171,7 @@
     <!-- RIGHT RAIL: OBSERVABILITY -->
     <div class="rail">
       <div class="lname">Cross-layer · Observability</div>
-      <div class="item"><b>📈 MLflow tracing</b><br>Tool calls logged from the Databricks MCP server to experiment <code>4115298422633092</code>. Cowork doesn't export model reasoning — tracing lives at the tool boundary + hooks.</div>
+      <div class="item"><b>📈 Observability</b><br>Managed MCP has no code hook to log from. Tool calls are auditable in Databricks query history/system tables; full agent traces in MLflow (exp <code>4115298422633092</code>) come from a thin Agent SDK eval harness — see <code>docs/observability.md</code>.</div>
       <div class="item"><b>✅ Evaluation</b><br>Score answers: are numbers tool-backed? on-target? complete?</div>
       <div class="item"><b>♻️ Resource-aware</b><br>Cache, batch, pick the right model per step.</div>
       <div class="pills"><span class="p p-ops">Evaluation &amp; Monitoring</span></div>
