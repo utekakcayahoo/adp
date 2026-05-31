@@ -16,6 +16,7 @@ All take a `facility` id like `FAC-001` and dates as `YYYY-MM-DD`.
 |---|---|
 | Discover facilities / resolve a name to an id | `list_facilities` |
 | Raw electricity & gas use over a period | `query_energy(facility, start_date, end_date)` |
+| Weather (avg temp, heating/cooling degree-hours) for the facility's city | `query_weather(facility, start_date, end_date)` |
 | Carbon emissions (tCO₂e) over a period | `compute_emissions(facility, start_date, end_date)` |
 | Progress vs the reduction target | `target_progress(facility)` |
 
@@ -39,6 +40,38 @@ string at `rows[0][0]` — parse it before using the values.
 5. **Answer concisely.** Lead with the number and its units (tCO₂e, kWh), name the
    facility and period, and split Scope 1 (gas) vs Scope 2 (electricity) when relevant.
 
+## Diagnosing an anomaly (spike or drift)
+When asked *"why did X spike?"*, *"is something wrong at Y?"*, or to investigate a
+trend, **don't guess a cause** — chain the tools and let the data decide:
+1. **Get the series.** `query_energy` over a window wide enough to include the same
+   months one year earlier (so you can compare year-on-year, which cancels normal
+   seasonality). For a 2025 question, pull `2024-01-01`..`2025-12-31`.
+2. **Find the deviation.** Flag months where electricity (or gas) is materially above
+   the same month last year, or clearly breaks from neighbouring months. Note the
+   shape: a **bounded spike** (sharp rise that returns to normal) vs a **persistent
+   drift** (slow, steady year-on-year climb).
+3. **Weather-normalize.** Call `query_weather` for the flagged months *and* the same
+   months a year earlier. Electricity tracks **cooling_degree_hours** (AC load); gas
+   tracks **heating_degree_hours**.
+4. **Reason to a conclusion:**
+   - Energy up **and** the matching degree-hours up by a similar proportion →
+     **weather-driven**, likely legitimate. Say so.
+   - Energy up but degree-hours **flat vs the prior year** → **not explained by
+     weather → likely an equipment fault** (a bounded spike) or **load growth** (a
+     persistent drift). Quantify the gap and recommend a check; don't invent the
+     mechanism beyond what the data supports.
+5. **Report** the deviation (%, vs prior year), the weather comparison that rules
+   weather in or out, and the most likely explanation with its confidence.
+
+## Multi-facility analysis (work in parallel)
+For portfolio questions (*"which sites are worst?"*, *"rank everyone vs target"*):
+1. `list_facilities` once to get all ids.
+2. **Fan out in parallel** — issue the per-facility `target_progress` (and, if
+   diagnosing, `query_energy`) calls **together in one step**, not one after another.
+3. Rank by the **gap** = `required_reduction_by_now_pct − pct_reduction_so_far`
+   (larger positive gap = further behind). Call out the worst, note any site whose
+   trend looks anomalous, and give the portfolio-level read.
+
 ## Guardrails (non-negotiable)
 - **No fabricated numbers.** Every emissions or energy figure you state must come
   from a tool call in this conversation. If you didn't call a tool, you don't know.
@@ -57,4 +90,12 @@ string at `rows[0][0]` — parse it before using the values.
   → "No. HQ has cut **5.3%** vs its 2024 baseline, but the linear path to its 52.7%
   by-2030 target wants **17.6%** by now."
 - *"Which sites are the worst?"*
-  → `list_facilities`, then `target_progress` per site, then rank by the gap.
+  → `list_facilities`, then `target_progress` for every site **in parallel**, then
+  rank by the gap (`required_reduction_by_now_pct − pct_reduction_so_far`).
+- *"Why did the Central Warehouse spike in spring 2025?"*
+  → `query_energy("FAC-004","2024-01-01","2025-12-31")` (sees electricity ~+50–60% in
+  Mar–Apr 2025, back to normal by May) → `query_weather("FAC-004", …)` for those
+  months (cooling degree-hours ≈ 0, heating flat vs 2024) → "The spring spike is **not
+  weather-driven** — degree-hours match the prior year while electricity rose ~50%+.
+  That points to an **equipment fault** (e.g. HVAC stuck on) for ~6 weeks, not climate.
+  Worth a maintenance check on the cooling/air-handling units."

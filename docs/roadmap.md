@@ -25,7 +25,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - ✅ Tables query cleanly; new readings keep arriving on schedule.
 - 📖 *(sets up)* Tool Use, Knowledge Retrieval.
 
-### Phase 2 — Remote MCP server (Databricks App)  *(next)*
+### Phase 2 — MCP server (Databricks managed)  *(done)*
 - 🧱 An **HTTPS MCP server** exposing read tools over the tables: `list_facilities`,
   `query_energy`, `compute_emissions`, `target_progress`. Hosted as a **Databricks
   App** so Cowork can reach it remotely; shipped inside the plugin's `.mcp.json`.
@@ -33,7 +33,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - ✅ Tools callable from Claude Code **and** Cowork; numbers match raw SQL.
 - 📖 **Model Context Protocol, Tool Use**.
 
-### Phase 3 — First plugin (Cowork, skills-first) + tracing
+### Phase 3 — First plugin (Cowork, skills-first) + tracing  *(done — OAuth proven)*
 - 🧱 A Claude **plugin** with one skill that routes a question to the right tool and
   answers with real numbers. Built/tested in Claude Code, installed in Cowork. Log
   tool calls from the MCP server to MLflow.
@@ -41,9 +41,14 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - ✅ "What did Office-1 emit last month?" → tool-backed answer; tool-call trace in MLflow.
 - 📖 **Routing, Tool Use, Reflection** (verify numbers), **Guardrails** (no fabrication).
 
-### Phase 4 — Reasoning depth
-- 🧱 Multi-step report generation; explain anomalies using weather/occupancy.
-- ✅ "Generate Q1 report" runs end-to-end from one instruction.
+### Phase 4 — Reasoning depth  *(done)*
+- 🧱 Added a 5th tool `query_weather`; upgraded `/carbon-report` to a planned multi-step
+  chain; weather-normalized **anomaly diagnosis**; new `/portfolio-review` parallel sweep.
+- 🟢 `main.adp.query_weather` (UC function, auto-exposed by managed MCP → **5 tools**).
+- ✅ Verified on live data vs the planted answer key: FAC-004 spring spike → **equipment
+  fault** (electricity +50–64% YoY while degree-hours flat); FAC-006 → **load creep**
+  (only site above baseline); portfolio ranked by target gap with parallel tool calls.
+- 📝 No occupancy data exists in the model (only weather), so diagnosis is weather-based.
 - 📖 **Prompt Chaining, Planning, Reasoning Techniques, Parallelization** (multi-facility).
 
 ### Phase 5 — Knowledge + goals + memory

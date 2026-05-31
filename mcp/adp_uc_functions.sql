@@ -86,3 +86,25 @@ RETURN (
   WHERE r.facility_id = facility
     AND r.reading_ts > b.now_ts - INTERVAL 365 DAY
 )
+-- @@STATEMENT@@
+CREATE OR REPLACE FUNCTION main.adp.query_weather(
+  facility STRING COMMENT 'Facility id, e.g. FAC-001. Weather is resolved to this facility''s city. Use list_facilities to find valid ids.',
+  start_date DATE COMMENT 'Inclusive start date, YYYY-MM-DD.',
+  end_date DATE COMMENT 'Inclusive end date, YYYY-MM-DD.')
+RETURNS STRING
+COMMENT 'Monthly weather for one facility''s city between two dates: average temperature (C), total heating degree-hours, and total cooling degree-hours. Returns a JSON array of {month, avg_temp_c, heating_degree_hours, cooling_degree_hours} sorted by month. Use this to weather-normalize an energy spike: if electricity jumps but cooling/heating degree-hours are flat versus the same months a year earlier, the spike is NOT explained by weather (likely an equipment fault).'
+RETURN (
+  SELECT to_json(sort_array(collect_list(struct(month, avg_temp_c, heating_degree_hours, cooling_degree_hours))))
+  FROM (
+    SELECT CAST(date_trunc('MONTH', w.weather_ts) AS DATE) AS month,
+           round(avg(w.temp_c), 1) AS avg_temp_c,
+           round(sum(w.heating_degree_hours), 1) AS heating_degree_hours,
+           round(sum(w.cooling_degree_hours), 1) AS cooling_degree_hours
+    FROM main.adp.adp_weather w
+    JOIN main.adp.adp_facilities f ON f.city = w.city
+    WHERE f.facility_id = facility
+      AND w.weather_ts >= start_date
+      AND w.weather_ts < end_date + INTERVAL 1 DAY
+    GROUP BY 1
+  )
+)
