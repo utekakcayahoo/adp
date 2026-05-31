@@ -54,7 +54,8 @@ claude mcp add-json adp \
   -s user --client-secret
 ```
 Then in a new session: `/mcp` → select `adp` → **Authenticate** → browser login →
-`adp` shows **connected, 4 tools**.
+`adp` shows **connected, 6 tools** (`list_facilities`, `query_energy`, `query_weather`,
+`compute_emissions`, `target_progress`, `search_standards`).
 
 > **Verified:** authenticated via the OAuth browser flow as `umut.tekakca@databricks.com`
 > and the agent called `list_facilities` → `compute_emissions` → `target_progress`,
@@ -76,3 +77,8 @@ claude mcp add adp --transport http \
 Ask: *"How much CO₂ did the Central Warehouse emit in March 2025, and are we on track there?"*
 The skill should route `list_facilities` → `compute_emissions` → `target_progress` and
 answer only with tool-derived numbers.
+
+Then follow up — *"so what should we do about it?"* — to exercise Phase 5: the skill keeps
+the **same facility in focus** (memory), calls `search_standards` for relevant policy, and
+returns **prioritized actions that cite the standard** (e.g. STD-EEM-CATALOG). Pure policy
+questions (*"what counts as Scope 2?"*) are answered from `search_standards` only.

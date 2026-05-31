@@ -1,0 +1,16 @@
+{
+  "name": "main.adp.adp_standards_index",
+  "endpoint_name": "adp_vs",
+  "primary_key": "id",
+  "index_type": "DELTA_SYNC",
+  "delta_sync_index_spec": {
+    "source_table": "main.adp.adp_standards",
+    "pipeline_type": "TRIGGERED",
+    "embedding_source_columns": [
+      {
+        "name": "body",
+        "embedding_model_endpoint_name": "databricks-gte-large-en"
+      }
+    ]
+  }
+}

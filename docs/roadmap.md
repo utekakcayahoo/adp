@@ -51,10 +51,19 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - 📝 No occupancy data exists in the model (only weather), so diagnosis is weather-based.
 - 📖 **Prompt Chaining, Planning, Reasoning Techniques, Parallelization** (multi-facility).
 
-### Phase 5 — Knowledge + goals + memory
-- 🧱 RAG over `adp_standards`; track progress vs `adp_targets`; remember the
-  facility in focus across turns.
-- 🟢 `adp_standards_index` (Vector Search).
+### Phase 5 — Knowledge + goals + memory  *(done)*
+- 🧱 Seeded a 12-policy `adp_standards` corpus; built a Vector Search index and exposed a
+  6th tool `search_standards` (RAG). Skill gained a **recommendations** workflow (turn a
+  target gap into prioritized, policy-cited actions) and a **memory** rule (hold the
+  facility/period in focus across turns).
+- 🟢 `adp_standards` (table, CDF on); `adp_vs` (VS endpoint, STANDARD); `adp_standards_index`
+  (Delta Sync, managed embeddings `databricks-gte-large-en`).
+- ✅ Verified: retrieval is on-target ("Scope 2"→GHG scopes 0.71; "datacenter creeping
+  up"→PUE 0.70; "cut emissions at a warehouse"→warehouse+efficiency); managed MCP now
+  lists **6 tools**; `search_standards` returns ranked JSON with a no-fabrication
+  policy-citation guardrail.
+- 📝 The `adp_vs` endpoint is **billable** while it exists — delete it when done
+  (`databricks vector-search-endpoints delete-endpoint adp_vs`).
 - 📖 **Knowledge Retrieval (RAG), Goal Setting & Monitoring, Memory Management**.
 
 ### Phase 6 — Multi-agent
