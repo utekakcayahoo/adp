@@ -9,7 +9,9 @@ adp-carbon-copilot/
 ├── .claude-plugin/plugin.json   # manifest
 ├── .mcp.json                    # MCP server: Databricks managed UC-functions endpoint
 ├── skills/carbon-copilot/SKILL.md
-└── commands/carbon-report.md    # /carbon-report <facility> [period]
+└── commands/
+    ├── carbon-report.md         # /carbon-report <facility> [period]
+    └── portfolio-review.md      # /portfolio-review  (parallel multi-facility sweep)
 ```
 
 The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
@@ -20,14 +22,20 @@ The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
 > MCP registered, a capable model will use the tools well on its own — but the skill
 > is what *guarantees* that behavior every time, including on weaker models.
 
-## 1. Install the skill
-**Claude Code (local):** symlink the skill into your personal skills dir, then start a
-new session:
+## 1. Install the skill + commands
+**Claude Code (local):** symlink the skill and both slash commands into your personal
+dirs (symlinks, so repo edits propagate), then start a new session:
 ```bash
-ln -s "$(pwd)/skills/carbon-copilot" ~/.claude/skills/carbon-copilot
+# from this plugin dir
+ln -sf "$(pwd)/skills/carbon-copilot"        ~/.claude/skills/carbon-copilot
+ln -sf "$(pwd)/commands/carbon-report.md"    ~/.claude/commands/carbon-report.md
+ln -sf "$(pwd)/commands/portfolio-review.md" ~/.claude/commands/portfolio-review.md
 ```
-**Cowork (production):** the skill ships *inside* the plugin — installing the plugin
-registers the skill, `.mcp.json`, and `/carbon-report` together (Phase 8).
+This registers the `carbon-copilot` skill plus `/carbon-report <facility> [period]`
+(planned, weather-aware report) and `/portfolio-review` (parallel multi-facility sweep).
+Commands are re-scanned per session — they appear as soon as the next session starts.
+**Cowork (production):** the skill + commands ship *inside* the plugin — installing the
+plugin registers the skill, both commands, and `.mcp.json` together (Phase 8).
 
 ## 2. Connect the MCP server
 
