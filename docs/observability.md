@@ -1,6 +1,6 @@
 # Observability — how we trace the agent
 
-Goal: agent traces in MLflow experiment `4115298422633092`. The **Cowork + managed-MCP**
+Goal: agent traces in MLflow experiment `3400437843984105`. The **Cowork + managed-MCP**
 architecture constrains how much of that is achievable. Here is the honest picture.
 
 ## What we CAN see
@@ -22,7 +22,7 @@ architecture constrains how much of that is achievable. Here is the honest pictu
 - **Now (Phase 3):** tool-call observability via Databricks query history.
 - **Phase 8 (eval):** a thin **Claude Agent SDK** harness that replays the same skill
   + the same MCP tools with MLflow tracing **on**, producing full traces in experiment
-  `4115298422633092` for evaluation. This is the only clean path to MLflow *agent*
+  `3400437843984105` for evaluation. This is the only clean path to MLflow *agent*
   traces while Cowork remains the production runtime.
 
 ## Consequence of the managed-MCP choice (be explicit)

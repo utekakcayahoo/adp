@@ -15,7 +15,7 @@
 
 # COMMAND ----------
 dbutils.widgets.dropdown("mode", "seed", ["seed", "append"])
-dbutils.widgets.text("catalog", "umut_aws_classic_stable_catalog")
+dbutils.widgets.text("catalog", "main")
 dbutils.widgets.text("schema", "adp")
 dbutils.widgets.text("history_start", "2024-01-01")
 

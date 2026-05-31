@@ -19,13 +19,13 @@ The committed `.mcp.json` reads the token from an env var, so **no secret is com
 
 1. Get a token (short-lived OAuth token, or create a PAT for a longer life):
    ```bash
-   export DATABRICKS_TOKEN=$(databricks auth token -p fevm-umut-aws-classic-stable \
+   export DATABRICKS_TOKEN=$(databricks auth token -p dexter-umut-databricks \
      | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
    ```
 2. Point Claude Code at this plugin's MCP server, e.g.:
    ```bash
    claude mcp add adp --transport http \
-     "https://fevm-umut-aws-classic-stable.cloud.databricks.com/api/2.0/mcp/functions/umut_aws_classic_stable_catalog/adp" \
+     "https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp" \
      --header "Authorization: Bearer $DATABRICKS_TOKEN"
    ```
 3. In a new Claude Code session: `/mcp` should list `adp` as connected with 4 tools.

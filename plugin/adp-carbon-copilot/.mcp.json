@@ -2,7 +2,7 @@
   "mcpServers": {
     "adp": {
       "type": "http",
-      "url": "https://fevm-umut-aws-classic-stable.cloud.databricks.com/api/2.0/mcp/functions/umut_aws_classic_stable_catalog/adp",
+      "url": "https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp",
       "headers": {
         "Authorization": "Bearer ${DATABRICKS_TOKEN}"
       }

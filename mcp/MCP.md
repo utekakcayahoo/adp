@@ -1,12 +1,12 @@
 # Phase 2 — MCP server (Databricks managed)
 
 **No server code.** The four Unity Catalog functions in
-`umut_aws_classic_stable_catalog.adp` are auto-exposed as MCP tools by Databricks'
+`main.adp` are auto-exposed as MCP tools by Databricks'
 **managed MCP server**. Source of the functions: `mcp/adp_uc_functions.sql`.
 
 ## Endpoint
 ```
-https://fevm-umut-aws-classic-stable.cloud.databricks.com/api/2.0/mcp/functions/umut_aws_classic_stable_catalog/adp
+https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp
 ```
 Verified 2026-05-30: `initialize` + `tools/list` → 4 tools (protocol `2025-06-18`,
 serverInfo `DatabricksMCPServer`).
@@ -25,7 +25,7 @@ function and parameter `COMMENT`s.
 ## Auth
 OAuth, with **Unity Catalog permissions enforced** (the agent only sees tools/data
 the user may access). Two client paths:
-- **Bearer token** (what we tested): `Authorization: Bearer $(databricks auth token -p fevm-umut-aws-classic-stable)`. Verified working via `curl`.
+- **Bearer token** (what we tested): `Authorization: Bearer $(databricks auth token -p dexter-umut-databricks)`. Verified working via `curl`.
 - **OAuth U2M** (what Claude Code / Cowork use): static OAuth client, redirect
   `http://localhost:8080/callback`. Exercised in **Phase 3** when we connect a client.
 
@@ -34,7 +34,7 @@ the user may access). Two client paths:
 - **Cowork plugin:** ship the server in the plugin's `.mcp.json` (remote, OAuth). Shape:
   ```json
   { "name": "adp",
-    "url": "https://fevm-umut-aws-classic-stable.cloud.databricks.com/api/2.0/mcp/functions/umut_aws_classic_stable_catalog/adp",
+    "url": "https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp",
     "oauth": true }
   ```
   Exact schema confirmed when we scaffold the plugin.
