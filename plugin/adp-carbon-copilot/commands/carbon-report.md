@@ -9,6 +9,15 @@ Use the `carbon-copilot` skill and the `adp` MCP tools. This is a **planned, mul
 job — state a one-line plan, then run the chain. Every figure must come from a tool
 call; never estimate.
 
+## Delegate to the team (multi-agent)
+This command is the showcase for the **specialist pipeline**. As **orchestrator**, spawn
+`carbon-analyst` and `carbon-accountant` on the facility **in parallel**, hand the
+resulting target gap to `carbon-advisor`, then give all three findings blocks to
+`carbon-reporter` to compose the report below. Pass the blocks forward verbatim — every
+figure still traces to a tool call made inside a specialist; never estimate. If the
+specialists aren't registered yet (fresh-session caveat), **fall back** to running the
+chain yourself, exactly as laid out below.
+
 ## Plan, then chain
 1. **Resolve the facility.** If a name/city was given, `list_facilities` → map to its id.
 2. **Fix the period.** Convert the request to explicit dates. If none was given, use the

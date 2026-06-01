@@ -66,9 +66,24 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   (`databricks vector-search-endpoints delete-endpoint adp_vs`).
 - 📖 **Knowledge Retrieval (RAG), Goal Setting & Monitoring, Memory Management**.
 
-### Phase 6 — Multi-agent
-- 🧱 Split into specialist skills / sub-agents — Analyst, Carbon Accountant,
-  Advisor, Reporter — coordinated by an Orchestrator (Cowork agent teams).
+### Phase 6 — Multi-agent  *(done)*
+- 🧱 Split the analysis into four specialist sub-agents (plugin `agents/`), each with a
+  **minimal tool allowlist** and a structured **findings block**: **carbon-analyst**
+  (energy + weather + anomaly), **carbon-accountant** (emissions + target),
+  **carbon-advisor** (prioritized, policy-cited actions), **carbon-reporter** (synthesis,
+  no new numbers). The **orchestrator is the skill** — a triage rule decides when to
+  delegate vs answer solo (the prioritization call). Both commands now delegate:
+  `/carbon-report` runs the pipeline; `/portfolio-review` fans out the accountant in parallel.
+- 🟢 No new Databricks resources — reuses the 6 MCP tools; each specialist just gets a subset.
+- ✅ Verified end-to-end on FAC-004 (simulated via general-purpose agents this session):
+  analyst ∥ accountant in parallel → advisor with the 12.2 pp gap → reporter composed the
+  report with **zero tool calls and no invented numbers**. Analyst reproduced the
+  equipment-fault diagnosis (+64%/+49% spring spike, weather ruled out); advisor cited
+  STD-EEM-CATALOG / STD-WAREHOUSE / STD-HVAC-SETPOINT and fired the >10 pp escalation rule
+  (STD-ESCALATION) while refusing to assert an escalation it wasn't handed.
+- 📝 Named sub-agent types are only spawnable in a **fresh session** (same frozen-registry
+  rule as skills); this session's test used general-purpose agents carrying each prompt.
+  The **reporter** is the most optional of the four — the orchestrator can absorb it.
 - 📖 **Multi-Agent Collaboration, Prioritization**.
 
 ### Phase 7 — Safety, HITL, robustness

@@ -8,6 +8,13 @@ Review the **entire facility portfolio** against its carbon-reduction targets.
 Use the `carbon-copilot` skill and the `adp` MCP tools. The point of this command is
 **parallelism** — don't walk the facilities one at a time.
 
+## Delegate to the team (multi-agent)
+As **orchestrator**, fan out `carbon-accountant` across **all** facilities **in parallel**
+(one specialist per facility), collect their findings blocks, rank by gap, then send only
+the worst 1–2 to `carbon-analyst` for a quick weather-normalized read. This keeps each
+facility's analysis in its own context and runs them concurrently. **Fall back** to
+calling the tools yourself if the specialists aren't registered yet.
+
 ## Steps
 1. **Enumerate.** `list_facilities` once to get every facility id.
 2. **Fan out (parallel).** For **all** facilities, call `target_progress` **together in a

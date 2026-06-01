@@ -9,8 +9,13 @@ adp-carbon-copilot/
 ├── .claude-plugin/plugin.json   # manifest
 ├── .mcp.json                    # MCP server: Databricks managed UC-functions endpoint
 ├── skills/carbon-copilot/SKILL.md
+├── agents/                      # Phase 6 specialist sub-agents (the "team")
+│   ├── carbon-analyst.md        # energy + weather + anomaly diagnosis
+│   ├── carbon-accountant.md     # emissions (Scope 1/2) + target progress
+│   ├── carbon-advisor.md        # prioritized, policy-cited actions (RAG)
+│   └── carbon-reporter.md       # synthesizes the findings into the report
 └── commands/
-    ├── carbon-report.md         # /carbon-report <facility> [period]
+    ├── carbon-report.md         # /carbon-report <facility> [period]  (specialist pipeline)
     └── portfolio-review.md      # /portfolio-review  (parallel multi-facility sweep)
 ```
 
@@ -22,20 +27,26 @@ The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
 > MCP registered, a capable model will use the tools well on its own — but the skill
 > is what *guarantees* that behavior every time, including on weaker models.
 
-## 1. Install the skill + commands
-**Claude Code (local):** symlink the skill and both slash commands into your personal
-dirs (symlinks, so repo edits propagate), then start a new session:
+## 1. Install the skill + sub-agents + commands
+**Claude Code (local):** symlink the skill, the four specialist sub-agents, and both
+slash commands into your personal dirs (symlinks, so repo edits propagate), then start a
+new session:
 ```bash
 # from this plugin dir
 ln -sf "$(pwd)/skills/carbon-copilot"        ~/.claude/skills/carbon-copilot
 ln -sf "$(pwd)/commands/carbon-report.md"    ~/.claude/commands/carbon-report.md
 ln -sf "$(pwd)/commands/portfolio-review.md" ~/.claude/commands/portfolio-review.md
+mkdir -p ~/.claude/agents
+for a in carbon-analyst carbon-accountant carbon-advisor carbon-reporter; do
+  ln -sf "$(pwd)/agents/$a.md" ~/.claude/agents/$a.md
+done
 ```
-This registers the `carbon-copilot` skill plus `/carbon-report <facility> [period]`
-(planned, weather-aware report) and `/portfolio-review` (parallel multi-facility sweep).
-Commands are re-scanned per session — they appear as soon as the next session starts.
-**Cowork (production):** the skill + commands ship *inside* the plugin — installing the
-plugin registers the skill, both commands, and `.mcp.json` together (Phase 8).
+This registers the `carbon-copilot` skill, the four **specialist sub-agents** (analyst,
+accountant, advisor, reporter — the orchestrated "team"), plus `/carbon-report <facility>
+[period]` (planned, weather-aware report) and `/portfolio-review` (parallel sweep). Skills,
+agents, and commands are re-scanned per session — **start a new session** before the named
+sub-agents can be spawned. **Cowork (production):** the skill + agents + commands ship
+*inside* the plugin — installing the plugin registers all of them with `.mcp.json` (Phase 8).
 
 ## 2. Connect the MCP server
 
@@ -82,3 +93,10 @@ Then follow up — *"so what should we do about it?"* — to exercise Phase 5: t
 the **same facility in focus** (memory), calls `search_standards` for relevant policy, and
 returns **prioritized actions that cite the standard** (e.g. STD-EEM-CATALOG). Pure policy
 questions (*"what counts as Scope 2?"*) are answered from `search_standards` only.
+
+For Phase 6 (the **team**), run `/carbon-report Central Warehouse 2025`. The orchestrator
+spawns **carbon-analyst** ∥ **carbon-accountant** in parallel, hands the target gap to
+**carbon-advisor**, and lets **carbon-reporter** compose the final report — each figure
+still traced to a tool call inside a specialist. A simple one-tool question (*"CO₂ at HQ
+last month?"*) is answered **solo** — the skill only convenes the team when the depth is
+worth it.
