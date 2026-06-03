@@ -26,7 +26,12 @@ the JSON string at `rows[0][0]` before using the values.
 3. Call `target_progress` for the on-track verdict. The **gap** =
    `required_reduction_by_now_pct − pct_reduction_so_far` (positive = behind the path).
 4. Reflect before reporting: total ≈ scope1 + scope2; values non-negative; the period
-   matches what was asked. If a result is empty/null, say the data isn't there.
+   matches what was asked. **Watch for silently bad data** — these tools never error, they
+   return zeros/empties: an all-zeros result (`total_tco2e: 0` with 0 kWh) or an empty `{}`
+   from `target_progress` means **no data**, not zero emissions; a window that runs past the
+   latest month in the data is a **partial** period. When that happens, fall back to the most
+   recent complete window, say which one, and flag it on the `DATA QUALITY` line — never report
+   a silent zero as fact.
 
 ## Return contract
 End your turn with exactly this block (one fact per line, no prose after it):
@@ -39,4 +44,5 @@ ENERGY: <electricity_kwh> kWh elec, <gas_kwh> kWh gas
 TARGET: baseline <year> <t> tCO₂e → <pct>% reduction by <year>
 PROGRESS: reduced <pct>% so far vs <pct>% required by now → GAP <pp> pp
 ON_TRACK: <yes | no>
+DATA QUALITY: <ok | the caveat — e.g. "partial period, reported through May 2026" / "no data for window" / "unknown facility">
 ```

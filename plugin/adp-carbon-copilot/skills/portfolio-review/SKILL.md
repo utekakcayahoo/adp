@@ -18,6 +18,10 @@ Present it as:
   % required by now, gap. Sorted worst-gap-first.
 - **Worst offenders** — the 1–2 sites furthest behind, with the numbers.
 - **Anomaly flags** — any site with a suspicious trend (one line each).
+- **Data-quality flags** — any site returning an all-zeros/empty result or a partial recent
+  period is a **data gap, not a real best-in-class** — call it out separately, don't rank it as
+  the leader (see carbon-copilot's *When the data is missing…* section).
 - **Portfolio read** — how many sites are on track, and the overall direction of travel.
 
-Every figure must come from a tool call. Do not estimate.
+Every figure must come from a tool call. Do not estimate. A portfolio review is a read for the
+user, not a filed record — if it leads to an action or escalation, propose it for sign-off.

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "mcp__adp__main__adp__(compute_emissions|query_energy|target_progress)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/flag_data_gaps.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

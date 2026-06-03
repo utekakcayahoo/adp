@@ -21,4 +21,9 @@ the anomaly routine, the report layout) already lives in the carbon-copilot skil
 specialists' own files — don't restate it here.
 
 If $ARGUMENTS omits the period, default to the most recent full calendar year (a report
-wants a year, not a month) and say which year you used.
+wants a year, not a month) and say which year you used. If the data doesn't cover the whole
+period (a partial/stale feed), report the **complete** window you can and flag the gap — don't
+present a silent zero as the answer (see carbon-copilot's *When the data is missing…* section).
+
+Present the result as a **DRAFT for review** and ask the user to approve it as final or request
+changes — it isn't final until they sign off (carbon-copilot's *Approve before it's final*).

@@ -12,11 +12,14 @@ adp-carbon-copilot/
 │   ├── carbon-copilot/SKILL.md  # core: routing, memory, diagnosis, guardrails (auto-invoked)
 │   ├── carbon-report/SKILL.md   # /carbon-report <facility> [period]  (specialist pipeline)
 │   └── portfolio-review/SKILL.md  # /portfolio-review  (parallel multi-facility sweep)
-└── agents/                      # Phase 6 specialist sub-agents (the "team")
-    ├── carbon-analyst.md        # energy + weather + anomaly diagnosis
-    ├── carbon-accountant.md     # emissions (Scope 1/2) + target progress
-    ├── carbon-advisor.md        # prioritized, policy-cited actions (RAG)
-    └── carbon-reporter.md       # synthesizes the findings into the report
+├── agents/                      # Phase 6 specialist sub-agents (the "team")
+│   ├── carbon-analyst.md        # energy + weather + anomaly diagnosis
+│   ├── carbon-accountant.md     # emissions (Scope 1/2) + target progress
+│   ├── carbon-advisor.md        # prioritized, policy-cited actions (RAG)
+│   └── carbon-reporter.md       # synthesizes the findings into the report
+└── hooks/                       # Phase 7 safety guardrail (PostToolUse)
+    ├── hooks.json               # matches the 3 numeric tools
+    └── flag_data_gaps.py        # flags silent-zero / empty / future-window results
 ```
 
 > **No `commands/`.** Plugin slash *commands* are deprecated in favour of **skills**
@@ -107,3 +110,18 @@ Central Warehouse for 2025"*). The orchestrator spawns **carbon-analyst** ∥
 **carbon-reporter** compose the final report — each figure still traced to a tool call
 inside a specialist. A simple one-tool question (*"CO₂ at HQ last month?"*) is answered
 **solo** — the skill only convenes the team when the depth is worth it.
+
+For Phase 7 (**safety, HITL, robustness**):
+- **Exception handling** — ask *"What were HQ's emissions in August 2026?"* The tools return a
+  silent all-zeros struct (no data exists yet — the feed ends mid-2026), so the agent must
+  **not** answer "0 tCO₂e": it says there's no data for that window and offers the most recent
+  complete period instead. *"…this month so far?"* should come back labelled **partial**.
+- **Human-in-the-loop** — a full report is presented as a **DRAFT for review**; the agent asks
+  you to approve it as final or request changes, and any escalation is phrased as a
+  recommendation pending sign-off — never as a done action.
+- **Guardrail hook** — `hooks/hooks.json` registers a **PostToolUse** hook
+  (`flag_data_gaps.py`) that fires on an all-zeros/empty/future-window result and injects a
+  data-quality reminder, as a deterministic backstop under the skill instruction. It ships with
+  the plugin (auto-loaded when the plugin is installed). **Hooks load at session start**, so
+  start a new session after install before it can fire. *Cowork plugin-hook support is
+  unverified — the skill instruction is the portable safety net.*

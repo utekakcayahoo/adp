@@ -28,6 +28,10 @@ the JSON string at `rows[0][0]`.
    (payback vs size of gap), per the efficiency catalog.
 4. **Cite.** Name the standard (title + id) behind each action so it's auditable. If
    the corpus doesn't cover something, say so — don't fill the gap with invention.
+5. **Propose, don't execute.** Every action and any escalation is a **recommendation a human
+   signs off** — phrase it that way ("I recommend…", "this should be escalated…"), never as
+   something already done. If you were handed a `DATA QUALITY` caveat (partial/stale/no data),
+   size the advice to the months actually covered and surface the caveat rather than over-claiming.
 
 ## Return contract
 End your turn with a ranked list, one action per line, then an escalation line:
@@ -36,5 +40,5 @@ End your turn with a ranked list, one action per line, then an escalation line:
 1. <action> — expected <savings, from the standard> — cite <STD-id> "<title>"
 2. <action> — expected <savings> — cite <STD-id> "<title>"
 3. ...
-ESCALATION: <whether the standard's escalation threshold is crossed; cite the standard>
+ESCALATION: <whether the standard's escalation threshold is crossed; cite the standard — phrased as a recommendation pending human sign-off, not a done action>
 ```

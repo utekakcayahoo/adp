@@ -21,7 +21,9 @@ real answer is the JSON string at `rows[0][0]`; parse it before using the values
 1. Resolve the facility id if you were handed a name or city.
 2. Pull `query_energy` over a window wide enough to include the **same months one year
    earlier** (this cancels normal seasonality). For a 2025 question, pull
-   `2024-01-01`..`2025-12-31`.
+   `2024-01-01`..`2025-12-31`. **Note where the series ends** — an empty/`null` series means no
+   data; if it stops before the window you were asked about, the recent period is **partial or
+   the feed is stale**. Analyze only the months actually covered and record it on `DATA QUALITY`.
 3. Flag months where electricity or gas is materially above the same month last year,
    or that break from neighbouring months. Classify the shape: a **bounded spike**
    (rises then returns to normal) vs a **persistent drift** (slow year-on-year climb).
@@ -47,4 +49,5 @@ FLAGGED: <months + % vs prior year, or "none">
 WEATHER CHECK: <the degree-hours comparison that rules weather in or out>
 DIAGNOSIS: <weather-driven | likely equipment fault | load growth | clean>
 CONFIDENCE: <high | medium | low> — <one clause why>
+DATA QUALITY: <ok | the caveat — e.g. "series ends May 2026, recent months partial/stale">
 ```

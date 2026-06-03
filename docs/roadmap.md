@@ -92,9 +92,31 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   specialists instead of being copied into the entry point.
 - 📖 **Multi-Agent Collaboration, Prioritization**.
 
-### Phase 7 — Safety, HITL, robustness
-- 🧱 Approval step before a report/action is "final"; graceful handling of
-  missing/late data. (Cowork hooks for lifecycle guardrails.)
+### Phase 7 — Safety, HITL, robustness  *(done)*
+- 🧱 Three safety patterns, skills-first:
+  - **Exception handling** — the core skill gained a *When the data is missing, partial, late,
+    or zero* routine: an all-zeros / `{}` / null / past-the-latest-reading result is a **data
+    signal, not the answer** — detect the case (future window · partial current period · unknown
+    id · stale feed), recover to the most recent complete window, and caveat it (grounded in the
+    data-quality standard). The **analyst** and **accountant** carry a tight copy and emit a
+    `DATA QUALITY:` findings line; the **reporter** surfaces it.
+  - **Human-in-the-loop** — a report is a **DRAFT until approved** (present, ask, wait); an
+    action/escalation is a **proposal, never declared done** (no-fabrication extended from
+    numbers to actions).
+  - **Guardrails (a real hook)** — a plugin **PostToolUse hook** (`hooks/flag_data_gaps.py`)
+    deterministically flags an all-zeros/empty/future-window `emissions|energy|target` result by
+    injecting a reminder — a deterministic backstop under the skill instruction.
+- 🟢 No new Databricks resources — the silent-zero/`{}` behavior of the existing tools is the
+  substrate the agent must handle; the UC functions are **unchanged**.
+- ✅ Verified the substrate on live data: a future window → `compute_emissions` returns
+  `{total:0, elec:0, …}` (a silent zero); an unknown id → `target_progress` returns `{}`; the
+  feed currently ends **May 2026** (so "this month", June, is empty). The hook script passes **6
+  unit cases** (fires on all-zeros / empty / future-window; no-op on real past data; robust to
+  response wrapping; no false positive on a 0.123 near-zero).
+- 📝 The hook's **live firing** needs a fresh session (same frozen-registry rule as skills), and
+  **Cowork plugin-hook support is unverified** — treat the hook as a Claude Code guardrail that
+  ships with the plugin. The **skill instruction is the portable safety net**; the hook is the
+  deterministic backstop.
 - 📖 **Human-in-the-Loop, Exception Handling & Recovery, Guardrails / Safety**.
 
 ### Phase 8 — Package the Cowork plugin + evaluate
