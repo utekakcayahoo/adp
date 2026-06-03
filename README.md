@@ -7,7 +7,7 @@ a **Facility Energy & Carbon Co-pilot** for a sustainability team.
 ## Stack
 - **Claude Code** (terminal) — the build/dev cockpit.
 - **Claude Cowork** (in Claude Desktop) — where the *end user* runs the agent. The
-  agent ships as a **Claude plugin** (skills + sub-agents + commands + a bundled
+  agent ships as a **Claude plugin** (skills + sub-agents + a bundled
   MCP connector), kept **skills-first**: behavior lives in *skills* (markdown +
   light tools), not heavy Python or DAGs. Same plugin format as Claude Code, so we
   build/test it in Claude Code and install it in Cowork.

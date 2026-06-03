@@ -5,8 +5,9 @@ something runnable and adds a few patterns. **Skills-first** — behavior lives 
 plugin skills (markdown + light tools), not big Python orchestration or DAGs.
 
 **Tooling:** build in **Claude Code** (local) → the agent is a **Claude plugin**
-(skills + sub-agents + commands + bundled `.mcp.json`) → the end user runs it in
-**Claude Cowork** → it reaches data through a **remote MCP server on Databricks**.
+(skills + sub-agents + bundled `.mcp.json`; slash entry points are skills, not
+commands) → the end user runs it in **Claude Cowork** → it reaches data through a
+**remote MCP server on Databricks**.
 
 Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resource (`adp` prefix)
 
@@ -72,7 +73,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   (energy + weather + anomaly), **carbon-accountant** (emissions + target),
   **carbon-advisor** (prioritized, policy-cited actions), **carbon-reporter** (synthesis,
   no new numbers). The **orchestrator is the skill** — a triage rule decides when to
-  delegate vs answer solo (the prioritization call). Both commands now delegate:
+  delegate vs answer solo (the prioritization call). Both slash entry points delegate:
   `/carbon-report` runs the pipeline; `/portfolio-review` fans out the accountant in parallel.
 - 🟢 No new Databricks resources — reuses the 6 MCP tools; each specialist just gets a subset.
 - ✅ Verified end-to-end on FAC-004 (simulated via general-purpose agents this session):
@@ -84,6 +85,11 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - 📝 Named sub-agent types are only spawnable in a **fresh session** (same frozen-registry
   rule as skills); this session's test used general-purpose agents carrying each prompt.
   The **reporter** is the most optional of the four — the orchestrator can absorb it.
+- 📝 *(2026-06-03)* Plugin **slash commands deprecated → migrated to skills.** `/carbon-report`
+  and `/portfolio-review` are now thin slash-invocable skills (`skills/`, each carrying the
+  old `argument-hint`); `commands/` was deleted and won't return. A skill can be slash-typed
+  *and* auto-invoke on intent, and the method now lives once in `carbon-copilot` + the
+  specialists instead of being copied into the entry point.
 - 📖 **Multi-Agent Collaboration, Prioritization**.
 
 ### Phase 7 — Safety, HITL, robustness
@@ -92,7 +98,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - 📖 **Human-in-the-Loop, Exception Handling & Recovery, Guardrails / Safety**.
 
 ### Phase 8 — Package the Cowork plugin + evaluate
-- 🧱 Package skills + sub-agents + commands + `.mcp.json` into the installable
+- 🧱 Package skills + sub-agents + `.mcp.json` into the installable
   **plugin**; install in Cowork. Add an evaluation harness (optionally a thin
   Claude Agent SDK harness for full-reasoning traces); watch tool-boundary traces.
 - 🟢 plugin `adp-carbon-copilot`; MCP host `adp_mcp` (Databricks App).
