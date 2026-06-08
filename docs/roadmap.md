@@ -119,11 +119,34 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   deterministic backstop.
 - 📖 **Human-in-the-Loop, Exception Handling & Recovery, Guardrails / Safety**.
 
-### Phase 8 — Package the Cowork plugin + evaluate
-- 🧱 Package skills + sub-agents + `.mcp.json` into the installable
-  **plugin**; install in Cowork. Add an evaluation harness (optionally a thin
-  Claude Agent SDK harness for full-reasoning traces); watch tool-boundary traces.
-- 🟢 plugin `adp-carbon-copilot`; MCP host `adp_mcp` (Databricks App).
+### Phase 8 — Package the plugin + evaluate  *(largely done — OAuth bake pending account re-auth)*
+- 🧱 **Packaged as an installable plugin + marketplace.** Added repo-root
+  `.claude-plugin/marketplace.json` (lists `adp-carbon-copilot` at source `./plugin/adp-carbon-copilot`);
+  plugin **and** marketplace manifests pass `claude plugin validate --strict`. Installed locally via
+  `claude plugin marketplace add <repo>` → `claude plugin install adp-carbon-copilot@adp-carbon-copilot-marketplace`.
+- 🧱 **Eval harness — regression + rubric (`eval/`).** `run_regression.py`: a deterministic
+  **data-layer regression** (no model calls) that gates the tool answers against the planted key.
+  `golden_scenarios.md`: 10 behavioural scenarios (S1–S10) + a scoring rubric run live. `README.md` ties them together.
+- 🧱 **Accountant window-conflation fix.** Made `target_progress` (trailing-12-month vs baseline)
+  explicitly distinct from the `compute_emissions` period so the two windows can't be merged.
+- 🧱 **`adp_vs` rebuilt** (deleted in Phase 7 for cost) — STANDARD endpoint + Delta Sync index
+  recreated from the intact 12-row source (managed embeddings `databricks-gte-large-en`); `search_standards` back up.
+- 🟢 plugin `adp-carbon-copilot` + marketplace `adp-carbon-copilot-marketplace`; `adp_vs` + `main.adp.adp_standards_index`.
+- ✅ `plugin details` confirms the install loads **3 skills, 4 agents, the PostToolUse hook, and the
+  `adp` MCP** — the **hook registers via the plugin install** (the earlier symlink-only install missed it).
+  The data-layer regression passes **11/11** live: FAC-001 2024 = 172.423; FAC-004 Mar-2025 = 77.2 with a
+  **1.64× spike while degree-hours flat** (equipment fault); FAC-006 the **only negative** reduction (−2.9%) and
+  **worst gap (19.7)** (load creep); silent-zero on a future window; `{}` on an unknown id; RAG on-target
+  (HVAC→STD-HVAC-SETPOINT 0.73, data-quality→STD-DATA-QUALITY, warehouse→STD-WAREHOUSE/STD-EEM-CATALOG).
+- 📝 **OAuth bake into `.mcp.json` is the one open item.** A plugin can only ship a **public/PKCE** client
+  (no secret — confirmed via the docs), so a new public custom-app-integration must be minted (needs
+  account-admin re-auth on `umut-dexter-account`). Until then the shipped `.mcp.json` keeps the
+  `${DATABRICKS_TOKEN}` header (local dev) + the documented OAuth connect recipe.
+- 📝 **Cowork install + live behavioural eval are manual / fresh-session.** Installing in Cowork is a Desktop
+  action; the golden scenarios, live hook firing, and named-agent (`subagent_type: carbon-*`) spawning are
+  exercised in a fresh session, not provable from the build session (frozen-registry rule).
+- 📝 No model-in-the-loop auto-runner — chosen scope was regression + rubric; the thin Claude Agent SDK
+  MLflow agent-trace harness remains the documented future lever (`docs/observability.md`).
 - 📖 **Evaluation & Monitoring, Resource-Aware Optimization, Learning & Adaptation**.
 
 ---

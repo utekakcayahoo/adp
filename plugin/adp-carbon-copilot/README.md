@@ -37,7 +37,21 @@ The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
 > is what *guarantees* that behavior every time, including on weaker models.
 
 ## 1. Install the skills + sub-agents
-**Claude Code (local):** symlink the three skills and the four specialist sub-agents into
+
+> **Phase 8 — install as a plugin (recommended).** The whole thing ships as an installable
+> plugin via a repo-root marketplace (`.claude-plugin/marketplace.json`). From the repo root:
+> ```bash
+> claude plugin marketplace add "$(pwd)"
+> claude plugin install adp-carbon-copilot@adp-carbon-copilot-marketplace
+> ```
+> `claude plugin details adp-carbon-copilot` shows the inventory: **3 skills, 4 agents, the
+> PostToolUse hook, and the `adp` MCP**. Installing as a plugin is what **registers the hook** —
+> the symlink method below does not. Start a new session after installing. (The marketplace is a
+> directory snapshot — after editing the repo, run `claude plugin marketplace update
+> adp-carbon-copilot-marketplace`.) **Cowork:** add the marketplace / install the plugin from the
+> Desktop app; skills, agents, hook, and `.mcp.json` all ship inside it.
+
+**Claude Code (local, live-edit dev):** symlink the three skills and the four specialist sub-agents into
 your personal dirs (symlinks, so repo edits propagate), then start a new session:
 ```bash
 # from this plugin dir

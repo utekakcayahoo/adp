@@ -23,7 +23,10 @@ the JSON string at `rows[0][0]` before using the values.
 2. If a period was given, call `compute_emissions` for it. Always report the
    **Scope 1 / Scope 2 split** — Scope 1 = on-site gas, Scope 2 = purchased
    electricity. Scope 3 is **not modeled**; never claim it.
-3. Call `target_progress` for the on-track verdict. The **gap** =
+3. Call `target_progress` for the on-track verdict. It compares the **trailing 12
+   months** against the baseline year — a **different window** from the `compute_emissions`
+   period in step 2, so never merge the two: the period's emissions and the 12-month
+   progress are **separate facts**, each reported on its own line. The **gap** =
    `required_reduction_by_now_pct − pct_reduction_so_far` (positive = behind the path).
 4. Reflect before reporting: total ≈ scope1 + scope2; values non-negative; the period
    matches what was asked. **Watch for silently bad data** — these tools never error, they

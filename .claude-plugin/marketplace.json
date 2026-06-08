@@ -1,0 +1,14 @@
+{
+  "name": "adp-carbon-copilot-marketplace",
+  "description": "Marketplace for the Facility Energy & Carbon Co-pilot plugin (ADP learning build).",
+  "owner": { "name": "Umut Tekakca" },
+  "plugins": [
+    {
+      "name": "adp-carbon-copilot",
+      "source": "./plugin/adp-carbon-copilot",
+      "description": "Facility Energy & Carbon Co-pilot. Answers energy, emissions, and target-tracking questions over Databricks data through MCP tools. Skills-first; never fabricates emissions.",
+      "category": "data",
+      "author": { "name": "Umut Tekakca" }
+    }
+  ]
+}
