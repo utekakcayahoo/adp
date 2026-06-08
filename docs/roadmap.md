@@ -143,12 +143,12 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   `oauth:{clientId,callbackPort:8080}` into the shipped `.mcp.json`, so a Cowork/Claude-Code install
   needs only `/mcp` → Authenticate — no manual registration, no secret shipped. The confidential
   `9bbe5bf5-…` client + the gitignored `.env` secret stay as the legacy manual-CLI path.
-- 📝 Two honest caveats on the bake: (a) the public client's **end-to-end browser flow is not yet
-  re-proven live** (structurally correct + docs-confirmed) — verify in a fresh session; (b) the local
-  `plugin install` copied the gitignored `.env` into `~/.claude/plugins/…` — harmless locally (git
-  excludes it, so the committed/distributed artifact is clean) but **exclude `.env` from any real
-  distribution** (the public client needs no secret anyway). A marketplace `update` refreshes the source
-  snapshot but **not** an already-cached installed version — reinstall to pick up plugin edits.
+- ✅ Both bake caveats since resolved: (a) the public-client **browser flow is proven live 2026-06-09**
+  (install → `/mcp` → Authenticate → 6 tools connect); (b) the legacy confidential-client secret `.env`
+  was **moved out of the plugin dir to the repo root**, so `plugin install` no longer copies it into the
+  cache (verified the reinstalled cache has no `.env`; git excludes `.env` everywhere). Note: a
+  marketplace `update` refreshes the source snapshot but **not** an already-cached installed version —
+  reinstall (`uninstall`+`install`) to pick up plugin edits.
 - 📝 **Cowork install + live behavioural eval are manual / fresh-session.** Installing in Cowork is a Desktop
   action; the golden scenarios, live hook firing, and named-agent (`subagent_type: carbon-*`) spawning are
   exercised in a fresh session, not provable from the build session (frozen-registry rule).

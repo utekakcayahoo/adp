@@ -84,10 +84,11 @@ Each user authenticates as themselves and **Unity Catalog enforces per-user acce
 logs in needs read/execute on `main.adp`. PKCE means no client secret ships in the plugin.
 
 > The earlier **confidential** client (`adp-carbon-copilot-mcp`, `9bbe5bf5-…`, secret in the
-> gitignored `.env`) was the path proven 2026-05-31 via `claude mcp add-json … --client-secret`.
-> It still works for manual CLI registration, but a plugin can only ship a *public* client — so the
-> bundled `.mcp.json` uses the public one above. *(The public client's end-to-end browser flow is
-> structurally correct + docs-confirmed, but not yet re-proven live — verify in a fresh session.)*
+> gitignored **repo-root** `.env` — kept out of the plugin dir so installs never copy it) was the
+> path proven 2026-05-31 via `claude mcp add-json … --client-secret`. It still works for manual CLI
+> registration, but a plugin can only ship a *public* client — so the bundled `.mcp.json` uses the
+> public one above. *(Public-client browser flow **proven live 2026-06-09**: install → `/mcp` →
+> Authenticate → 6 tools connect.)*
 
 ### Alternative — token header (quick local dev, no OAuth)
 For a fast check without OAuth, register the server manually with a bearer token (the shipped
