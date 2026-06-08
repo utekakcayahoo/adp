@@ -73,32 +73,25 @@ with `.mcp.json` (Phase 8).
 
 ## 2. Connect the MCP server
 
-### Option A — OAuth (production path, **proven 2026-05-31**)
-A static OAuth client is registered on the Azure Databricks account
-(`adp-carbon-copilot-mcp`, client_id `9bbe5bf5-d69c-4e7f-88b9-6b4005f87af8`,
-redirect `http://localhost:8080/callback`, scopes `all-apis`+`offline_access`). Its
-**secret lives in the gitignored `.env`** — never committed.
+### OAuth — baked into the plugin (Phase 8, the shipped path)
+The bundled `.mcp.json` ships a **public/PKCE OAuth client** (no secret):
+`adp-carbon-copilot-public`, client_id `fa2a1992-0304-4783-8e8e-5c5a104bac8a`, redirect
+`http://localhost:8080/callback`, scopes `all-apis`+`offline_access`. So once the plugin is
+installed there is **nothing to register** — in a new session run `/mcp` → select `adp` →
+**Authenticate** → browser login → `adp` shows **connected, 6 tools** (`list_facilities`,
+`query_energy`, `query_weather`, `compute_emissions`, `target_progress`, `search_standards`).
+Each user authenticates as themselves and **Unity Catalog enforces per-user access**, so whoever
+logs in needs read/execute on `main.adp`. PKCE means no client secret ships in the plugin.
 
-```bash
-# from this plugin dir
-set -a; . ./.env; set +a
-export MCP_CLIENT_SECRET="$ADP_OAUTH_CLIENT_SECRET"   # --client-secret is a flag; it reads this env var
-claude mcp add-json adp \
-  "{\"type\":\"http\",\"url\":\"https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp\",\"oauth\":{\"clientId\":\"$ADP_OAUTH_CLIENT_ID\",\"callbackPort\":8080}}" \
-  -s user --client-secret
-```
-Then in a new session: `/mcp` → select `adp` → **Authenticate** → browser login →
-`adp` shows **connected, 6 tools** (`list_facilities`, `query_energy`, `query_weather`,
-`compute_emissions`, `target_progress`, `search_standards`).
+> The earlier **confidential** client (`adp-carbon-copilot-mcp`, `9bbe5bf5-…`, secret in the
+> gitignored `.env`) was the path proven 2026-05-31 via `claude mcp add-json … --client-secret`.
+> It still works for manual CLI registration, but a plugin can only ship a *public* client — so the
+> bundled `.mcp.json` uses the public one above. *(The public client's end-to-end browser flow is
+> structurally correct + docs-confirmed, but not yet re-proven live — verify in a fresh session.)*
 
-> **Verified:** authenticated via the OAuth browser flow as `umut.tekakca@databricks.com`
-> and the agent called `list_facilities` → `compute_emissions` → `target_progress`,
-> returning a correct, tool-grounded answer. **Unity Catalog enforces per-user access**,
-> so whoever authenticates must have read/execute on `main.adp`.
-
-### Option B — token header (quick local dev)
-Simpler for a fast check; the committed `.mcp.json` reads `DATABRICKS_TOKEN` so no
-secret is committed:
+### Alternative — token header (quick local dev, no OAuth)
+For a fast check without OAuth, register the server manually with a bearer token (the shipped
+`.mcp.json` now uses OAuth, so this is a separate manual registration; nothing secret is committed):
 ```bash
 export DATABRICKS_TOKEN=$(databricks auth token -p dexter-umut-databricks \
   | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")

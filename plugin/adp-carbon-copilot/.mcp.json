@@ -3,8 +3,9 @@
     "adp": {
       "type": "http",
       "url": "https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp",
-      "headers": {
-        "Authorization": "Bearer ${DATABRICKS_TOKEN}"
+      "oauth": {
+        "clientId": "fa2a1992-0304-4783-8e8e-5c5a104bac8a",
+        "callbackPort": 8080
       }
     }
   }

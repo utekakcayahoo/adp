@@ -119,7 +119,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   deterministic backstop.
 - 📖 **Human-in-the-Loop, Exception Handling & Recovery, Guardrails / Safety**.
 
-### Phase 8 — Package the plugin + evaluate  *(largely done — OAuth bake pending account re-auth)*
+### Phase 8 — Package the plugin + evaluate  *(done)*
 - 🧱 **Packaged as an installable plugin + marketplace.** Added repo-root
   `.claude-plugin/marketplace.json` (lists `adp-carbon-copilot` at source `./plugin/adp-carbon-copilot`);
   plugin **and** marketplace manifests pass `claude plugin validate --strict`. Installed locally via
@@ -138,10 +138,17 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   **1.64× spike while degree-hours flat** (equipment fault); FAC-006 the **only negative** reduction (−2.9%) and
   **worst gap (19.7)** (load creep); silent-zero on a future window; `{}` on an unknown id; RAG on-target
   (HVAC→STD-HVAC-SETPOINT 0.73, data-quality→STD-DATA-QUALITY, warehouse→STD-WAREHOUSE/STD-EEM-CATALOG).
-- 📝 **OAuth bake into `.mcp.json` is the one open item.** A plugin can only ship a **public/PKCE** client
-  (no secret — confirmed via the docs), so a new public custom-app-integration must be minted (needs
-  account-admin re-auth on `umut-dexter-account`). Until then the shipped `.mcp.json` keeps the
-  `${DATABRICKS_TOKEN}` header (local dev) + the documented OAuth connect recipe.
+- 🧱 **OAuth baked into `.mcp.json`.** Minted a **public/PKCE** custom-app-integration
+  `adp-carbon-copilot-public` (client_id `fa2a1992-…`, `confidential:false`, empty secret) and baked
+  `oauth:{clientId,callbackPort:8080}` into the shipped `.mcp.json`, so a Cowork/Claude-Code install
+  needs only `/mcp` → Authenticate — no manual registration, no secret shipped. The confidential
+  `9bbe5bf5-…` client + the gitignored `.env` secret stay as the legacy manual-CLI path.
+- 📝 Two honest caveats on the bake: (a) the public client's **end-to-end browser flow is not yet
+  re-proven live** (structurally correct + docs-confirmed) — verify in a fresh session; (b) the local
+  `plugin install` copied the gitignored `.env` into `~/.claude/plugins/…` — harmless locally (git
+  excludes it, so the committed/distributed artifact is clean) but **exclude `.env` from any real
+  distribution** (the public client needs no secret anyway). A marketplace `update` refreshes the source
+  snapshot but **not** an already-cached installed version — reinstall to pick up plugin edits.
 - 📝 **Cowork install + live behavioural eval are manual / fresh-session.** Installing in Cowork is a Desktop
   action; the golden scenarios, live hook firing, and named-agent (`subagent_type: carbon-*`) spawning are
   exercised in a fresh session, not provable from the build session (frozen-registry rule).
