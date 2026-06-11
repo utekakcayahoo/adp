@@ -52,7 +52,7 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - 📝 No occupancy data exists in the model (only weather), so diagnosis is weather-based.
 - 📖 **Prompt Chaining, Planning, Reasoning Techniques, Parallelization** (multi-facility).
 
-### Phase 5 — Knowledge + goals + memory  *(done)*
+### Phase 5 — Knowledge + goals + memory  *(done; RAG component **removed 2026-06-11** — see "RAG removed" at the end)*
 - 🧱 Seeded a 12-policy `adp_standards` corpus; built a Vector Search index and exposed a
   6th tool `search_standards` (RAG). Skill gained a **recommendations** workflow (turn a
   target gap into prioritized, policy-cited actions) and a **memory** rule (hold the
@@ -126,11 +126,11 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   `claude plugin marketplace add <repo>` → `claude plugin install adp-carbon-copilot@adp-carbon-copilot-marketplace`.
 - 🧱 **Eval harness — regression + rubric (`eval/`).** `run_regression.py`: a deterministic
   **data-layer regression** (no model calls) that gates the tool answers against the planted key.
-  `golden_scenarios.md`: 10 behavioural scenarios (S1–S10) + a scoring rubric run live. `README.md` ties them together.
+  `golden_scenarios.md`: 9 behavioural scenarios (S1–S9) + a scoring rubric run live. `README.md` ties them together.
 - 🧱 **Accountant window-conflation fix.** Made `target_progress` (trailing-12-month vs baseline)
   explicitly distinct from the `compute_emissions` period so the two windows can't be merged.
 - 🧱 **`adp_vs` rebuilt** (deleted in Phase 7 for cost) — STANDARD endpoint + Delta Sync index
-  recreated from the intact 12-row source (managed embeddings `databricks-gte-large-en`); `search_standards` back up.
+  recreated from the intact 12-row source (managed embeddings `databricks-gte-large-en`); `search_standards` back up. *(Superseded — the entire RAG component was **removed 2026-06-11**; see end.)*
 - 🟢 plugin `adp-carbon-copilot` + marketplace `adp-carbon-copilot-marketplace`; `adp_vs` + `main.adp.adp_standards_index`.
 - ✅ `plugin details` confirms the install loads **3 skills, 4 agents, the PostToolUse hook, and the
   `adp` MCP** — the **hook registers via the plugin install** (the earlier symlink-only install missed it).
@@ -155,6 +155,21 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 - 📝 No model-in-the-loop auto-runner — chosen scope was regression + rubric; the thin Claude Agent SDK
   MLflow agent-trace harness remains the documented future lever (`docs/observability.md`).
 - 📖 **Evaluation & Monitoring, Resource-Aware Optimization, Learning & Adaptation**.
+
+### RAG component removed  *(2026-06-11)*
+The Knowledge-Retrieval / RAG capability built in Phase 5 was fully removed at the user's request:
+- 🧱 **Infra deleted:** VS endpoint `adp_vs`, Delta Sync index `main.adp.adp_standards_index`, source
+  table `main.adp.adp_standards`, and the UC function `main.adp.search_standards` — the managed MCP now
+  exposes **5 tools** (was 6).
+- 🧱 **Agent team → 3:** the **carbon-advisor** (RAG-grounded recommendations) was deleted; the
+  *recommend-actions / cite-policy* workflow and the policy-citation guardrail were stripped from the
+  core skill; the `/carbon-report` pipeline is now analyst ∥ accountant → reporter.
+- 🧱 **Code/docs:** removed `data/seed_standards.py`, `data/adp_standards_seed.sql`,
+  `mcp/adp_standards_index.json`; excised `search_standards` from `mcp/adp_uc_functions.sql`; dropped the
+  3 RAG eval checks (regression now **8/8**) and the 2 RAG golden scenarios (→ S1–S9); cleaned the
+  MCP / data-model / use-case / README docs.
+- 📝 The earlier phases above are kept as the historical build log; **this entry is the authoritative
+  current state**.
 
 ---
 We don't go chapter-by-chapter — patterns are pulled in when the use case needs them.

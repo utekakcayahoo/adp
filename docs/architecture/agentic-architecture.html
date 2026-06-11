@@ -120,12 +120,9 @@
           <div class="box skill"><h4>🧮 Carbon Accountant</h4>
             <p>Applies factors → tCO₂e; double-checks the math.</p>
             <div class="pills"><span class="p p-tool">Tool Use</span><span class="p p-ops">Reflection</span></div></div>
-          <div class="box skill"><h4>💡 Advisor</h4>
-            <p>Ranks actions by impact &amp; effort.</p>
-            <div class="pills"><span class="p p-core">Reasoning</span><span class="p p-core">Prioritization</span></div></div>
           <div class="box skill"><h4>📑 Reporter</h4>
-            <p>Chains steps into an ESG narrative, grounded in standards.</p>
-            <div class="pills"><span class="p p-core">Prompt Chaining</span><span class="p p-tool">RAG</span></div></div>
+            <p>Chains the specialists' findings into an ESG narrative.</p>
+            <div class="pills"><span class="p p-core">Prompt Chaining</span></div></div>
         </div>
         <div class="pills" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px">
           <b style="font-size:11px;color:var(--muted)">CROSS-CUTTING:</b>
@@ -146,23 +143,19 @@
         <span class="tool">query_energy(facility, period)</span>
         <span class="tool">compute_emissions(facility, period, scope)</span>
         <span class="tool">target_progress(facility)</span>
-        <span class="tool">search_standards(query)</span>
         <div class="pills" style="margin-top:8px"><span class="p p-tool">Model Context Protocol</span><span class="p p-tool">Tool Use</span></div>
       </div>
 
-      <div class="arrow">▼ <small>SQL / vector search</small></div>
+      <div class="arrow">▼ <small>SQL</small></div>
 
       <!-- L3 DATA -->
       <div class="layer data">
-        <div class="lname">Layer 3 · Data &amp; knowledge — Databricks (synthetic, <code>adp</code>)</div>
+        <div class="lname">Layer 3 · Data — Databricks (synthetic, <code>adp</code>)</div>
         <div class="row">
           <div class="box"><h4>🗄️ Unity Catalog tables</h4>
             <p>adp_facilities · adp_energy_readings · adp_emission_factors · adp_targets · adp_weather</p></div>
           <div class="box"><h4>⚙️ Jobs · <code>adp_data_generator</code></h4>
             <p>Batch seed + recurring hourly appends (our streaming-ish feed).</p></div>
-          <div class="box"><h4>🔎 Vector Search · <code>adp_standards_index</code></h4>
-            <p>GHG Protocol, methodology, ESG template, anomaly playbook — for RAG.</p>
-            <div class="pills"><span class="p p-tool">Knowledge Retrieval</span></div></div>
         </div>
       </div>
 

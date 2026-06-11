@@ -19,7 +19,6 @@ All take a `facility` id like `FAC-001` and dates as `YYYY-MM-DD`.
 | Weather (avg temp, heating/cooling degree-hours) for the facility's city | `query_weather(facility, start_date, end_date)` |
 | Carbon emissions (tCO₂e) over a period | `compute_emissions(facility, start_date, end_date)` |
 | Progress vs the reduction target | `target_progress(facility)` |
-| Look up written policy / standards / methodology / recommended efficiency measures | `search_standards(query)` |
 
 **Reading tool output:** the server wraps results as
 `{"columns":["output"],"rows":[["<JSON string>"]]}`. The real answer is the JSON
@@ -65,9 +64,8 @@ which case you're in and **recover** — never pass a silent zero off as fact.
    (e.g. *"the last full month with data is May 2026"*), say which window you used and why, then
    answer with that. A partial current period may be reported **explicitly labelled "partial"**
    with the last full month offered alongside.
-4. **Ground the caveat in policy.** When you flag a coverage problem, look up the
-   **data-quality standard** (`search_standards("data quality reading coverage")`) and cite it,
-   the same way you cite any other policy.
+4. **Flag it plainly.** State the coverage gap in the answer so a silent zero or partial total
+   never reads as a real result.
 
 ## Remembering context across turns (memory)
 Hold the **facility in focus** — the last facility the user named or you resolved — and
@@ -113,44 +111,26 @@ For portfolio questions (*"which sites are worst?"*, *"rank everyone vs target"*
    (larger positive gap = further behind). Call out the worst, note any site whose
    trend looks anomalous, and give the portfolio-level read.
 
-## Recommending actions & citing policy (goals + knowledge)
-Measuring the gap isn't enough. When asked *"what should we do?"*, *"how do we get back
-on track?"*, or right after you diagnose an anomaly, turn the finding into **prioritized,
-policy-grounded actions**:
-1. **Quantify the gap.** Use `target_progress` (plus `compute_emissions`/`query_energy`
-   as needed) so the recommendation is sized to a real number, not a vibe.
-2. **Retrieve the relevant standard.** Call `search_standards` with the topic — e.g.
-   "efficiency measures for a warehouse", "HVAC fault runbook", "datacenter load creep"
-   — and ground the advice in what comes back. Quote the measure and its expected savings.
-3. **Prioritize.** Lead with the measure that closes the most gap for the least effort
-   (payback vs. size of gap), per the efficiency catalog.
-4. **Cite the source.** Name the standard you used (its `title` / `id`) so the advice is
-   auditable — e.g. *"per the Energy efficiency measures catalog (STD-EEM-CATALOG)…"*.
-
-For pure **policy questions** (*"what's our setpoint policy?"*, *"what counts as Scope 2?"*,
-*"when do we escalate?"*), answer **from `search_standards` only** — don't invent policy.
-
 ## Working as a team (multi-agent orchestration)
 For a deep, multi-faceted request you can act as the **orchestrator** and delegate to
-four specialist sub-agents (shipped in the plugin's `agents/`), each with its own
+three specialist sub-agents (shipped in the plugin's `agents/`), each with its own
 focused tools and a structured findings block it returns:
 - **carbon-analyst** — energy series + weather + anomaly diagnosis.
 - **carbon-accountant** — emissions (Scope 1/2) + target progress.
-- **carbon-advisor** — prioritized, policy-cited actions (RAG over the standards corpus).
 - **carbon-reporter** — synthesizes their findings into the final report (no new numbers).
 
 **Delegate only when it earns its keep — triage first (this is the prioritization call):**
-- A **single, narrow question** ("CO₂ at HQ last month?", "what's our setpoint policy?")
+- A **single, narrow question** ("CO₂ at HQ last month?", "are we on track at HQ?")
   → answer it yourself with the one tool. Do **not** spin up a team; that's pure overhead.
-- A **full facility report** or **"diagnose this, then tell me what to do"** → run the
-  pipeline: spawn `carbon-analyst` and `carbon-accountant` **in parallel**, hand the
-  resulting gap to `carbon-advisor`, then give all three blocks to `carbon-reporter`.
-  (The reporter is optional — for a quick answer you can synthesize the blocks yourself.)
+- A **full facility report** or **"diagnose this and explain what's going on"** → run the
+  pipeline: spawn `carbon-analyst` and `carbon-accountant` **in parallel**, then give both
+  blocks to `carbon-reporter`. (The reporter is optional — for a quick answer you can
+  synthesize the blocks yourself.)
 - A **whole-portfolio review** → fan out `carbon-accountant` across **all** facilities
   in parallel, rank by gap, then send only the worst 1–2 to `carbon-analyst` for a deep dive.
 
 **The handoff contract:** each specialist ends with a compact findings block (defined in
-its agent file). Pass those blocks **forward verbatim** — the advisor and reporter must
+its agent file). Pass those blocks **forward verbatim** — the reporter must
 not re-derive numbers, and you must never let a figure appear that no specialist reported.
 
 **Why delegate at all:** each specialist runs in its **own context** with only the tools
@@ -164,8 +144,8 @@ A report or an action isn't yours to declare done — a human signs it off. Two 
   **DRAFT** and ask the user to **approve it as final or tell you what to change**. Don't call
   it "final", "filed", or "the official record" until they say so. Apply changes and re-present.
 - **Actions are proposals, never done deals.** Recommending a measure, opening a maintenance
-  ticket, or **escalating** (e.g. raising a >10 pp gap to the sustainability lead per the
-  escalation standard) is a **proposal** the human decides on. Say *"I recommend …"* /
+  ticket, or **escalating** (e.g. raising a large gap to the sustainability lead) is a
+  **proposal** the human decides on. Say *"I recommend …"* /
   *"this should be escalated …"* — never imply you already did it. This is the no-fabrication
   guardrail extended from numbers to **actions**: if you didn't get a go-ahead, it hasn't happened.
 
@@ -178,9 +158,6 @@ A report or an action isn't yours to declare done — a human signs it off. Two 
   Scope 3 — it isn't modeled.
 - **On-track claims** must come from `target_progress` (its `on_track` field and the
   gap between `pct_reduction_so_far` and `required_reduction_by_now_pct`).
-- **Policy comes from the corpus.** Any statement about policy, methodology, thresholds,
-  or recommended measures (and their savings) must come from `search_standards` results —
-  cite the standard by title/id. Don't fabricate a policy or a savings figure.
 
 ## Examples
 - *"How much CO₂ did the Central Warehouse emit in March 2025?"*

@@ -56,26 +56,6 @@ computed downstream as `kWh × emission factor`.
 
 History starts **2024-01-01**; the scheduled `append` run keeps it current.
 
-## Knowledge corpus — `adp_standards` (Phase 5, RAG)
-Not produced by the data job — seeded by `data/seed_standards.py`. Holds the written
-policies the co-pilot cites, so recommendations and policy answers are grounded in text
-rather than invented.
-
-| column | type | notes |
-|---|---|---|
-| id | string | PK, e.g. `STD-HVAC-SETPOINT` |
-| title | string | short policy title |
-| category | string | hvac / operations / accounting / targets / efficiency / datacenter / reporting / warehouse / procurement |
-| body | string | the policy text (this is what gets embedded) |
-| source | string | illustrative source label |
-
-Change Data Feed is enabled (required for the Delta Sync index). A Databricks **Vector
-Search** index `main.adp.adp_standards_index` (endpoint `adp_vs`, Databricks-managed
-embeddings via `databricks-gte-large-en`) indexes `body` and is exposed to the agent as
-the `search_standards` tool. **Billable:** the `adp_vs` endpoint accrues cost while it
-exists — delete it (`databricks vector-search-endpoints delete-endpoint adp_vs`) when the
-phase is done.
-
 ## Answer key — planted anomalies (for testing the Diagnose capability)
 > The agent should *discover* these from the data; this is our ground truth to
 > check it against. Do not feed this to the agent.

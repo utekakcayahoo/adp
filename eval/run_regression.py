@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ADP Phase 8 — data-layer regression for the carbon co-pilot's tools.
 
-Calls the six Unity Catalog functions that back the MCP tools and asserts the
+Calls the five Unity Catalog functions that back the MCP tools and asserts the
 planted answer key still holds (see docs/data-model.md). This tests the *data /
 tool layer* the agent depends on — NOT the agent's behaviour (that's the
 golden-scenario rubric in eval/golden_scenarios.md, run in a live session).
@@ -146,27 +146,6 @@ def c_silent_zero():
 def c_unknown():
     tp = tool("target_progress", "FAC-999")
     return tp == {} or "baseline_year" not in tp, f"{tp}"
-
-
-@check("RAG: 'HVAC setpoint policy' top hit is STD-HVAC-SETPOINT")
-def c_rag_hvac():
-    r = tool("search_standards", "HVAC setpoint policy")
-    top = r[0] if r else {}
-    return top.get("id") == "STD-HVAC-SETPOINT", f"top={top.get('id')} score={top.get('score')}"
-
-
-@check("RAG: 'data quality reading coverage' surfaces STD-DATA-QUALITY in top-5")
-def c_rag_dq():
-    r = tool("search_standards", "data quality reading coverage")
-    ids = [x.get("id") for x in r]
-    return "STD-DATA-QUALITY" in ids, f"ids={ids}"
-
-
-@check("RAG: 'cut emissions at a warehouse' surfaces STD-WAREHOUSE or STD-EEM-CATALOG")
-def c_rag_warehouse():
-    r = tool("search_standards", "cut emissions at a warehouse")
-    ids = [x.get("id") for x in r]
-    return ("STD-WAREHOUSE" in ids) or ("STD-EEM-CATALOG" in ids), f"ids={ids}"
 
 
 def main():

@@ -18,10 +18,9 @@ It exercises every pattern in the book with the simplest possible data:
 | "Produce the quarterly report" (multi-step) | Planning, Prompt Chaining |
 | Different question types (lookup vs diagnose vs report) | Routing |
 | Several facilities at once | Parallelization |
-| Methodology / standards lookups | Knowledge Retrieval (RAG) |
 | Reduction targets | Goal Setting & Monitoring |
 | Approve an action/report before it's "final" | Human-in-the-Loop |
-| Specialists: analyst / accountant / advisor / reporter | Multi-Agent Collaboration |
+| Specialists: analyst / accountant / reporter | Multi-Agent Collaboration |
 | Remember the facility in focus | Memory Management |
 | Missing / late data | Exception Handling & Recovery |
 | Traces + scoring | Evaluation & Monitoring |
@@ -56,11 +55,6 @@ Catalog/schema finalized in the data phase; table names are fixed now:
 3. **`adp_emission_factors`** — `grid_region, fuel{electricity|gas}, kgco2e_per_kwh, valid_from, valid_to, source`
 4. **`adp_targets`** — `scope{org|facility}, facility_id?, baseline_year, baseline_tco2e, target_year, target_reduction_pct`
 5. **`adp_weather`** — `weather_ts, city, temp_c, heating_degree_hours, cooling_degree_hours` *(explains consumption swings)*
-
-**Knowledge base for RAG (`adp_standards`):** short, plain-language docs — GHG
-Protocol scope definitions, our emission-factor methodology, an ESG report
-template, an anomaly-investigation playbook. Indexed in Databricks Vector Search
-as **`adp_standards_index`**.
 
 ## Success criteria (how we know each step works)
 - Every emissions number the agent states is traceable to a tool call — **no fabrication**.

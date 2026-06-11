@@ -15,7 +15,6 @@ adp-carbon-copilot/
 ├── agents/                      # Phase 6 specialist sub-agents (the "team")
 │   ├── carbon-analyst.md        # energy + weather + anomaly diagnosis
 │   ├── carbon-accountant.md     # emissions (Scope 1/2) + target progress
-│   ├── carbon-advisor.md        # prioritized, policy-cited actions (RAG)
 │   └── carbon-reporter.md       # synthesizes the findings into the report
 └── hooks/                       # Phase 7 safety guardrail (PostToolUse)
     ├── hooks.json               # matches the 3 numeric tools
@@ -51,7 +50,7 @@ The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
 > adp-carbon-copilot-marketplace`.) **Cowork:** add the marketplace / install the plugin from the
 > Desktop app; skills, agents, hook, and `.mcp.json` all ship inside it.
 
-**Claude Code (local, live-edit dev):** symlink the three skills and the four specialist sub-agents into
+**Claude Code (local, live-edit dev):** symlink the three skills and the three specialist sub-agents into
 your personal dirs (symlinks, so repo edits propagate), then start a new session:
 ```bash
 # from this plugin dir
@@ -59,13 +58,13 @@ mkdir -p ~/.claude/skills ~/.claude/agents
 for s in carbon-copilot carbon-report portfolio-review; do
   ln -sf "$(pwd)/skills/$s" ~/.claude/skills/$s
 done
-for a in carbon-analyst carbon-accountant carbon-advisor carbon-reporter; do
+for a in carbon-analyst carbon-accountant carbon-reporter; do
   ln -sf "$(pwd)/agents/$a.md" ~/.claude/agents/$a.md
 done
 ```
 This registers `carbon-copilot` (the core skill) plus two **slash-invocable skills** —
 `/carbon-report <facility> [period]` (planned, weather-aware report) and `/portfolio-review`
-(parallel sweep) — and the four **specialist sub-agents** (analyst, accountant, advisor,
+(parallel sweep) — and the three **specialist sub-agents** (analyst, accountant,
 reporter — the orchestrated "team"). Skills and agents are re-scanned per session —
 **start a new session** before the named sub-agents can be spawned. **Cowork (production):**
 the skills + agents ship *inside* the plugin — installing the plugin registers all of them
@@ -78,8 +77,8 @@ The bundled `.mcp.json` ships a **public/PKCE OAuth client** (no secret):
 `adp-carbon-copilot-public`, client_id `fa2a1992-0304-4783-8e8e-5c5a104bac8a`, redirect
 `http://localhost:8080/callback`, scopes `all-apis`+`offline_access`. So once the plugin is
 installed there is **nothing to register** — in a new session run `/mcp` → select `adp` →
-**Authenticate** → browser login → `adp` shows **connected, 6 tools** (`list_facilities`,
-`query_energy`, `query_weather`, `compute_emissions`, `target_progress`, `search_standards`).
+**Authenticate** → browser login → `adp` shows **connected, 5 tools** (`list_facilities`,
+`query_energy`, `query_weather`, `compute_emissions`, `target_progress`).
 Each user authenticates as themselves and **Unity Catalog enforces per-user access**, so whoever
 logs in needs read/execute on `main.adp`. PKCE means no client secret ships in the plugin.
 
@@ -88,7 +87,7 @@ logs in needs read/execute on `main.adp`. PKCE means no client secret ships in t
 > path proven 2026-05-31 via `claude mcp add-json … --client-secret`. It still works for manual CLI
 > registration, but a plugin can only ship a *public* client — so the bundled `.mcp.json` uses the
 > public one above. *(Public-client browser flow **proven live 2026-06-09**: install → `/mcp` →
-> Authenticate → 6 tools connect.)*
+> Authenticate → 5 tools connect.)*
 
 ### Alternative — token header (quick local dev, no OAuth)
 For a fast check without OAuth, register the server manually with a bearer token (the shipped
@@ -106,16 +105,14 @@ Ask: *"How much CO₂ did the Central Warehouse emit in March 2025, and are we o
 The skill should route `list_facilities` → `compute_emissions` → `target_progress` and
 answer only with tool-derived numbers.
 
-Then follow up — *"so what should we do about it?"* — to exercise Phase 5: the skill keeps
-the **same facility in focus** (memory), calls `search_standards` for relevant policy, and
-returns **prioritized actions that cite the standard** (e.g. STD-EEM-CATALOG). Pure policy
-questions (*"what counts as Scope 2?"*) are answered from `search_standards` only.
+Then follow up — *"and how's its target?"* — to exercise **memory**: the skill keeps the
+**same facility in focus** and answers about the one from the previous turn without re-asking.
 
 For Phase 6 (the **team**), run `/carbon-report Central Warehouse 2025` — now a
 slash-invocable **skill** (it also auto-invokes on a plain *"write me a full report on the
 Central Warehouse for 2025"*). The orchestrator spawns **carbon-analyst** ∥
-**carbon-accountant** in parallel, hands the target gap to **carbon-advisor**, and lets
-**carbon-reporter** compose the final report — each figure still traced to a tool call
+**carbon-accountant** in parallel and lets **carbon-reporter** compose the final report —
+each figure still traced to a tool call
 inside a specialist. A simple one-tool question (*"CO₂ at HQ last month?"*) is answered
 **solo** — the skill only convenes the team when the depth is worth it.
 

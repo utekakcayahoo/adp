@@ -23,7 +23,7 @@ architecture constrains how much of that is achievable. Here is the honest pictu
 - **Phase 8 (eval, done):** a two-layer eval harness in `eval/` — a deterministic
   **data-layer regression** (`run_regression.py`) that gates the tool answers against the
   planted answer key (baseline, the FAC-004 fault, the FAC-006 creep, the silent-zero
-  substrate, RAG retrieval), plus a **golden-scenario behavioural rubric**
+  substrate), plus a **golden-scenario behavioural rubric**
   (`golden_scenarios.md`) run in a live session. **Live tool-call monitoring** stays the
   Databricks query-history path above (which tool ran, with what args, as whom).
 - **Future lever (not built):** a thin **Claude Agent SDK** harness that replays the same

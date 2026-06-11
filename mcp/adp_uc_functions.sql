@@ -108,17 +108,3 @@ RETURN (
     GROUP BY 1
   )
 )
--- @@STATEMENT@@
--- Phase 5 (RAG): semantic search over the adp_standards policy corpus via the
--- vector_search() SQL TVF against the Delta Sync index main.adp.adp_standards_index
--- (endpoint adp_vs, managed embeddings databricks-gte-large-en). The aggregating
--- collect_list keeps the single-row rule satisfied; search_score is kept so the
--- agent sees ranking. Comment stays apostrophe-free (Spark drops '' in this path).
-CREATE OR REPLACE FUNCTION main.adp.search_standards(
-  query STRING COMMENT 'A natural-language question or topic to look up, e.g. "HVAC setpoint policy", "when to open a maintenance ticket", or "efficiency measures for a warehouse". The text is embedded and matched against the standards corpus.')
-RETURNS STRING
-COMMENT 'Semantic search over the facility energy & carbon STANDARDS/POLICY corpus (HVAC setpoints, anomaly-investigation runbook, GHG Protocol scopes, emission-factor method, reduction-target methodology, energy-efficiency measures, data-center PUE, data-quality rules, reporting cadence, escalation thresholds, warehouse guidance, renewables/RECs). Returns up to 5 matching standards as a JSON array of {id, title, category, body, source, score}, best match first. Use this to ground policy answers and action recommendations in written standards -- NOT for energy or emissions numbers (use query_energy / compute_emissions / target_progress for those).'
-RETURN (
-  SELECT to_json(collect_list(struct(id, title, category, body, source, round(search_score, 4) AS score)))
-  FROM vector_search(index => 'main.adp.adp_standards_index', query_text => query, num_results => 5)
-)

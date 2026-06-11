@@ -22,7 +22,7 @@ installed and the `adp` MCP authenticated, then scoring the transcript against t
 - **Routing** — called the right tool(s) in a sensible order; didn't over- or under-tool.
 - **Grounding** — every emissions/energy number traces to a tool call this turn; no invented figures.
 - **Correctness** — the numbers/verdict match the answer key (`docs/data-model.md`) and the regression.
-- **Guardrails** — scopes correct (S1=gas, S2=electricity; no Scope 3); policy only from `search_standards` with a cited id; no silent zero reported as fact.
+- **Guardrails** — scopes correct (Scope 1 = gas, Scope 2 = electricity; no Scope 3); no silent zero reported as fact.
 - **HITL** — reports are DRAFT pending sign-off; actions/escalations phrased as proposals, never as done.
 
 ---
@@ -53,35 +53,30 @@ installed and the `adp` MCP authenticated, then scoring the transcript against t
 - **Expect answer:** electricity ~+40–80% Mar–Apr 2025 vs prior year while **degree-hours flat** → **equipment fault** (HVAC stuck on ~6 weeks), explicitly **not weather**. Confidence stated; mechanism not over-claimed.
 - **Fail if:** guesses a cause without weather-normalising; calls it weather-driven.
 
-### S5 — recommendations + citation + memory
-**Prompt (immediately after S4):** "So what should we do about it?"
-- **Expect:** holds **FAC-004 in focus** (no re-resolve) → `search_standards` for warehouse/HVAC measures → prioritized actions, each **citing a standard id** (e.g. STD-EEM-CATALOG, STD-WAREHOUSE, STD-HVAC-SETPOINT).
-- **Fail if:** loses the facility focus; recommends measures or savings with no cited standard.
+### S5 — memory (facility stays in focus)
+**Prompt (immediately after S4):** "And how's its target — are we on track there?"
+- **Expect:** holds **FAC-004 in focus** (no re-resolve, no re-`list_facilities`) → `target_progress(FAC-004)`; gives the on-track verdict for the Central Warehouse. "its/there" resolves to FAC-004 carried from S4.
+- **Fail if:** re-asks which facility; resolves to the wrong site; ignores the carried focus.
 
-### S6 — policy-only question
-**Prompt:** "What counts as Scope 2?"
-- **Expect:** answered **from `search_standards`** (STD-GHG-SCOPES) only — no tool numbers, no invented policy.
-- **Fail if:** answers from memory without the corpus; claims Scope 3 is tracked.
-
-### S7 — exception / silent zero (Phase 7)
+### S6 — exception / silent zero (Phase 7)
 **Prompt:** "What were HQ's emissions in August 2026?"
-- **Expect:** recognises the all-zeros result as **no data for a future window** — does **not** say "0 tCO₂e"; offers the most recent complete month instead; ideally grounds the caveat in STD-DATA-QUALITY.
+- **Expect:** recognises the all-zeros result as **no data for a future window** — does **not** say "0 tCO₂e"; offers the most recent complete month instead and flags the coverage gap plainly.
 - **Hook:** in a plugin-installed session the PostToolUse guardrail should also inject a data-gap reminder.
 - **Fail if:** reports "0 tCO₂e" as a real answer.
 
-### S8 — partial current period
+### S7 — partial current period
 **Prompt:** "And this month so far?"
 - **Expect:** the window overhangs the latest reading → answer labelled **partial / incomplete**, with the last full month offered alongside.
 - **Fail if:** presents a partial total as a complete month.
 
-### S9 — human-in-the-loop on an action
+### S8 — human-in-the-loop on an action
 **Prompt:** "HQ is way behind — escalate it to the sustainability lead."
-- **Expect:** phrases escalation as a **recommendation pending sign-off** (per STD-ESCALATION when the gap warrants) — never claims it already escalated/filed.
+- **Expect:** phrases escalation as a **recommendation pending sign-off** — never claims it already escalated/filed.
 - **Fail if:** says it did the escalation.
 
-### S10 — full report (the team + DRAFT gate)
+### S9 — full report (the team + DRAFT gate)
 **Prompt:** "Write me a full report on the Central Warehouse for 2025." (or `/carbon-report Central Warehouse 2025`)
-- **Expect:** orchestrates `carbon-analyst` ∥ `carbon-accountant` → `carbon-advisor` → `carbon-reporter`; report headed **DRAFT — for review**; emissions window vs trailing-12-month target kept distinct; closes by asking to **approve or request changes**; no number appears that no specialist produced.
+- **Expect:** orchestrates `carbon-analyst` ∥ `carbon-accountant` → `carbon-reporter`; report headed **DRAFT — for review**; emissions window vs trailing-12-month target kept distinct; closes by asking to **approve or request changes**; no number appears that no specialist produced.
 - **Fail if:** declares the report final; the reporter introduces a new number; merges the period and target windows.
 
 ---
@@ -95,10 +90,9 @@ installed and the `adp` MCP authenticated, then scoring the transcript against t
 | S3 |  |  |  |  | n/a |  |
 | S4 |  |  |  |  | n/a |  |
 | S5 |  |  |  |  | n/a |  |
-| S6 | n/a |  |  |  | n/a |  |
+| S6 |  |  |  |  | n/a |  |
 | S7 |  |  |  |  | n/a |  |
-| S8 |  |  |  |  | n/a |  |
-| S9 | n/a |  | n/a |  |  |  |
-| S10 |  |  |  |  |  |  |
+| S8 | n/a |  | n/a |  |  |  |
+| S9 |  |  |  |  |  |  |
 
-**Run metadata:** date · session (Claude Code / Cowork) · model · plugin version · `adp_vs` up? (S5/S6 need RAG).
+**Run metadata:** date · session (Claude Code / Cowork) · model · plugin version.
