@@ -1,6 +1,6 @@
 # Observability — how we trace the agent
 
-Goal: agent traces in MLflow experiment `3400437843984105`. The **Cowork + managed-MCP**
+Goal: agent traces in MLflow experiment `3400437843984105`. The **Claude Code on Desktop + managed-MCP**
 architecture constrains how much of that is achievable. Here is the honest picture.
 
 ## What we CAN see
@@ -13,7 +13,7 @@ architecture constrains how much of that is achievable. Here is the honest pictu
   harness below) can log each tool request/response.
 
 ## What we CANNOT easily get
-- **Model-reasoning traces in MLflow.** Cowork runs the model, and managed MCP runs
+- **Model-reasoning traces in MLflow.** Claude Code on Desktop runs the model, and managed MCP runs
   the tools — both are managed services with **no code hook** for us to call
   `mlflow.log_trace()` / `mlflow.<framework>.autolog()`. So chain-of-thought / step
   traces can't be exported the way the Claude Agent SDK would.
@@ -29,7 +29,7 @@ architecture constrains how much of that is achievable. Here is the honest pictu
 - **Future lever (not built):** a thin **Claude Agent SDK** harness that replays the same
   skill + MCP tools with MLflow tracing **on**, producing full *agent-reasoning* traces in
   experiment `3400437843984105`. This is the only clean path to MLflow agent traces while
-  Cowork (no model hook) remains the runtime — deferred, since the chosen Phase-8 scope was
+  Claude Code on Desktop (no model hook) remains the runtime — deferred, since the chosen Phase-8 scope was
   regression + rubric.
 
 ## Consequence of the managed-MCP choice (be explicit)

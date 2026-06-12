@@ -29,7 +29,7 @@ python3 eval/run_regression.py            # exits 0 if all checks pass, 1 otherw
 Nine prompts (S1–S9) that exercise routing, grounding, the anomaly chain, memory, the
 silent-zero exception, partial periods, the HITL gates, and the full report pipeline. Run
 them in a **fresh session** with the plugin installed and `adp` authenticated, and score
-each against the rubric. This is the only path to behaviour-level eval while Cowork (no
+each against the rubric. This is the only path to behaviour-level eval while Claude Code on Desktop (no
 model hook) is the runtime — see `docs/observability.md`.
 
 ## What this layer does NOT do (honest scope)

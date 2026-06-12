@@ -6,15 +6,15 @@ a **Facility Energy & Carbon Co-pilot** for a sustainability team.
 
 ## Stack
 - **Claude Code** (terminal) — the build/dev cockpit.
-- **Claude Cowork** (in Claude Desktop) — where the *end user* runs the agent. The
+- **Claude Code on Claude Desktop** — where the *end user* runs the agent. The
   agent ships as a **Claude plugin** (skills + sub-agents + a bundled
   MCP connector), kept **skills-first**: behavior lives in *skills* (markdown +
-  light tools), not heavy Python or DAGs. Same plugin format as Claude Code, so we
-  build/test it in Claude Code and install it in Cowork.
+  light tools), not heavy Python or DAGs. Same plugin format across both, so we
+  build/test it in the Claude Code terminal and install it in Claude Code on Claude Desktop.
 - **Databricks** — synthetic data + the **remote MCP server** (hosted as a
   Databricks App, HTTPS) that the plugin connects to.
 - **MLflow** — tracing & evaluation, captured at the **MCP/tool boundary**
-  (Cowork doesn't natively export agent reasoning).
+  (Claude Code on Desktop doesn't natively export agent reasoning).
 
 All Databricks resources use the prefix **`adp`**.
 

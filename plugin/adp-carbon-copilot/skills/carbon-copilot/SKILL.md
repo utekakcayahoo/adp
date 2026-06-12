@@ -149,7 +149,7 @@ A report or an action isn't yours to declare done — a human signs it off. Two 
   *"this should be escalated …"* — never imply you already did it. This is the no-fabrication
   guardrail extended from numbers to **actions**: if you didn't get a go-ahead, it hasn't happened.
 
-(In Claude Code/Cowork this is just an explicit pause: present, ask, wait for the reply.)
+(In Claude Code this is just an explicit pause: present, ask, wait for the reply.)
 
 ## Guardrails (non-negotiable)
 - **No fabricated numbers.** Every emissions or energy figure you state must come

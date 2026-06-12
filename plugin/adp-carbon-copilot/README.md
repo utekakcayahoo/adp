@@ -1,7 +1,7 @@
 # adp-carbon-copilot (Claude plugin)
 
 The Facility Energy & Carbon Co-pilot, packaged as a Claude **plugin** — the same
-format Claude Code and Cowork both load. Skills-first: behavior lives in `skills/`,
+format Claude Code loads, in the terminal and on Claude Desktop. Skills-first: behavior lives in `skills/`,
 data access in `.mcp.json` (the Databricks managed MCP server).
 
 ```
@@ -47,7 +47,7 @@ The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
 > PostToolUse hook, and the `adp` MCP**. Installing as a plugin is what **registers the hook** —
 > the symlink method below does not. Start a new session after installing. (The marketplace is a
 > directory snapshot — after editing the repo, run `claude plugin marketplace update
-> adp-carbon-copilot-marketplace`.) **Cowork:** add the marketplace / install the plugin from the
+> adp-carbon-copilot-marketplace`.) **Claude Code on Desktop:** add the marketplace / install the plugin from the
 > Desktop app; skills, agents, hook, and `.mcp.json` all ship inside it.
 
 **Claude Code (local, live-edit dev):** symlink the three skills and the three specialist sub-agents into
@@ -66,7 +66,7 @@ This registers `carbon-copilot` (the core skill) plus two **slash-invocable skil
 `/carbon-report <facility> [period]` (planned, weather-aware report) and `/portfolio-review`
 (parallel sweep) — and the three **specialist sub-agents** (analyst, accountant,
 reporter — the orchestrated "team"). Skills and agents are re-scanned per session —
-**start a new session** before the named sub-agents can be spawned. **Cowork (production):**
+**start a new session** before the named sub-agents can be spawned. **Claude Code on Desktop (production):**
 the skills + agents ship *inside* the plugin — installing the plugin registers all of them
 with `.mcp.json` (Phase 8).
 
@@ -128,5 +128,5 @@ For Phase 7 (**safety, HITL, robustness**):
   (`flag_data_gaps.py`) that fires on an all-zeros/empty/future-window result and injects a
   data-quality reminder, as a deterministic backstop under the skill instruction. It ships with
   the plugin (auto-loaded when the plugin is installed). **Hooks load at session start**, so
-  start a new session after install before it can fire. *Cowork plugin-hook support is
-  unverified — the skill instruction is the portable safety net.*
+  start a new session after install before it can fire. *On Claude Code (terminal or Desktop) plugin
+  hooks are supported natively; the skill instruction remains the portable safety net.*

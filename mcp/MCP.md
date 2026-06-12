@@ -31,12 +31,12 @@ energy spike against degree-hours to tell a fault from a hot/cold spell.
 OAuth, with **Unity Catalog permissions enforced** (the agent only sees tools/data
 the user may access). Two client paths:
 - **Bearer token** (what we tested): `Authorization: Bearer $(databricks auth token -p dexter-umut-databricks)`. Verified working via `curl`.
-- **OAuth U2M** (what Claude Code / Cowork use): static OAuth client, redirect
+- **OAuth U2M** (what Claude Code uses): static OAuth client, redirect
   `http://localhost:8080/callback`. Exercised in **Phase 3** when we connect a client.
 
 ## Connect from clients (Phase 3)
 - **Claude Code:** `claude mcp add` with the OAuth config (to run/verify in Phase 3).
-- **Cowork plugin:** ship the server in the plugin's `.mcp.json` (remote, OAuth). Shape:
+- **Claude Code on Desktop (plugin):** ship the server in the plugin's `.mcp.json` (remote, OAuth). Shape:
   ```json
   { "name": "adp",
     "url": "https://adb-4851152775098961.1.azuredatabricks.net/api/2.0/mcp/functions/main/adp",

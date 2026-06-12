@@ -1,6 +1,6 @@
 {
   "name": "adp-carbon-copilot",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Facility Energy & Carbon Co-pilot. Answers energy, emissions, and target-tracking questions over Databricks data through MCP tools. Skills-first; never fabricates emissions.",
   "author": { "name": "Umut Tekakca" }
 }

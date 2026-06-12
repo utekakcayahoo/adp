@@ -6,7 +6,7 @@ plugin skills (markdown + light tools), not big Python orchestration or DAGs.
 
 **Tooling:** build in **Claude Code** (local) → the agent is a **Claude plugin**
 (skills + sub-agents + bundled `.mcp.json`; slash entry points are skills, not
-commands) → the end user runs it in **Claude Cowork** → it reaches data through a
+commands) → the end user runs it in **Claude Code on Claude Desktop** → it reaches data through a
 **remote MCP server on Databricks**.
 
 Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resource (`adp` prefix)
@@ -29,14 +29,14 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
 ### Phase 2 — MCP server (Databricks managed)  *(done)*
 - 🧱 An **HTTPS MCP server** exposing read tools over the tables: `list_facilities`,
   `query_energy`, `compute_emissions`, `target_progress`. Hosted as a **Databricks
-  App** so Cowork can reach it remotely; shipped inside the plugin's `.mcp.json`.
+  App** so Claude Code on Desktop can reach it remotely; shipped inside the plugin's `.mcp.json`.
 - 🟢 `adp_mcp` (Databricks App).
-- ✅ Tools callable from Claude Code **and** Cowork; numbers match raw SQL.
+- ✅ Tools callable from Claude Code — terminal **and** Desktop; numbers match raw SQL.
 - 📖 **Model Context Protocol, Tool Use**.
 
-### Phase 3 — First plugin (Cowork, skills-first) + tracing  *(done — OAuth proven)*
+### Phase 3 — First plugin (Claude Code on Desktop, skills-first) + tracing  *(done — OAuth proven)*
 - 🧱 A Claude **plugin** with one skill that routes a question to the right tool and
-  answers with real numbers. Built/tested in Claude Code, installed in Cowork. Log
+  answers with real numbers. Built/tested in the Claude Code terminal, installed on Claude Desktop. Log
   tool calls from the MCP server to MLflow.
 - 🟢 MLflow experiment `3400437843984105`.
 - ✅ "What did Office-1 emit last month?" → tool-backed answer; tool-call trace in MLflow.
@@ -113,10 +113,10 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   feed currently ends **May 2026** (so "this month", June, is empty). The hook script passes **6
   unit cases** (fires on all-zeros / empty / future-window; no-op on real past data; robust to
   response wrapping; no false positive on a 0.123 near-zero).
-- 📝 The hook's **live firing** needs a fresh session (same frozen-registry rule as skills), and
-  **Cowork plugin-hook support is unverified** — treat the hook as a Claude Code guardrail that
-  ships with the plugin. The **skill instruction is the portable safety net**; the hook is the
-  deterministic backstop.
+- 📝 The hook's **live firing** needs a fresh session (same frozen-registry rule as skills); it now runs
+  in **Claude Code on Claude Desktop**, which supports plugin hooks natively, so the earlier
+  Cowork plugin-hook-support uncertainty no longer applies. It ships with the plugin as a guardrail; the
+  **skill instruction is the portable safety net**; the hook is the deterministic backstop.
 - 📖 **Human-in-the-Loop, Exception Handling & Recovery, Guardrails / Safety**.
 
 ### Phase 8 — Package the plugin + evaluate  *(done)*
@@ -140,8 +140,8 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   (HVAC→STD-HVAC-SETPOINT 0.73, data-quality→STD-DATA-QUALITY, warehouse→STD-WAREHOUSE/STD-EEM-CATALOG).
 - 🧱 **OAuth baked into `.mcp.json`.** Minted a **public/PKCE** custom-app-integration
   `adp-carbon-copilot-public` (client_id `fa2a1992-…`, `confidential:false`, empty secret) and baked
-  `oauth:{clientId,callbackPort:8080}` into the shipped `.mcp.json`, so a Cowork/Claude-Code install
-  needs only `/mcp` → Authenticate — no manual registration, no secret shipped. The confidential
+  `oauth:{clientId,callbackPort:8080}` into the shipped `.mcp.json`, so a Claude Code install (terminal or
+  Desktop) needs only `/mcp` → Authenticate — no manual registration, no secret shipped. The confidential
   `9bbe5bf5-…` client + the gitignored `.env` secret stay as the legacy manual-CLI path.
 - ✅ Both bake caveats since resolved: (a) the public-client **browser flow is proven live 2026-06-09**
   (install → `/mcp` → Authenticate → 6 tools connect); (b) the legacy confidential-client secret `.env`
@@ -149,9 +149,10 @@ Legend: 🧱 build · ✅ verify · 📖 book patterns · 🟢 Databricks resour
   cache (verified the reinstalled cache has no `.env`; git excludes `.env` everywhere). Note: a
   marketplace `update` refreshes the source snapshot but **not** an already-cached installed version —
   reinstall (`uninstall`+`install`) to pick up plugin edits.
-- 📝 **Cowork install + live behavioural eval are manual / fresh-session.** Installing in Cowork is a Desktop
-  action; the golden scenarios, live hook firing, and named-agent (`subagent_type: carbon-*`) spawning are
-  exercised in a fresh session, not provable from the build session (frozen-registry rule).
+- 📝 **Desktop install + live behavioural eval are manual / fresh-session.** Installing on Claude Desktop is
+  a Desktop action; the golden scenarios, live hook firing, and named-agent (`subagent_type: carbon-*`)
+  spawning are exercised in a fresh session, not provable from the build session (frozen-registry rule).
+  *(The golden scenarios and named-agent spawning were since run live — see the 2026-06-12 entry below.)*
 - 📝 No model-in-the-loop auto-runner — chosen scope was regression + rubric; the thin Claude Agent SDK
   MLflow agent-trace harness remains the documented future lever (`docs/observability.md`).
 - 📖 **Evaluation & Monitoring, Resource-Aware Optimization, Learning & Adaptation**.
@@ -168,8 +169,29 @@ The Knowledge-Retrieval / RAG capability built in Phase 5 was fully removed at t
   `mcp/adp_standards_index.json`; excised `search_standards` from `mcp/adp_uc_functions.sql`; dropped the
   3 RAG eval checks (regression now **8/8**) and the 2 RAG golden scenarios (→ S1–S9); cleaned the
   MCP / data-model / use-case / README docs.
-- 📝 The earlier phases above are kept as the historical build log; **this entry is the authoritative
-  current state**.
+- 📝 The earlier phases above are kept as the historical build log; this RAG-removal entry plus the
+  2026-06-12 entry below are the authoritative current state.
+
+### End-user runtime change + live behavioural eval passed  *(2026-06-12)*
+- 🧱 **End-user runtime changed: Claude Cowork → Claude Code on Claude Desktop.** The agent is no longer
+  delivered through Cowork; the end user now runs the same Claude plugin in **Claude Code on Claude
+  Desktop**. The build/dev cockpit is unchanged (Claude Code in the terminal). Wording updated repo-wide:
+  `README.md`, both architecture diagrams, this roadmap, `mcp/MCP.md`, `docs/observability.md`, the `eval/`
+  docs, the plugin `README.md`, and the `carbon-copilot` skill.
+- ✅ **Live behavioural eval — golden scenarios S1–S9 all PASSED**, run in a fresh session on Claude Code
+  on Claude Desktop with the plugin installed and `adp` authenticated. Covers routing, grounding, the
+  weather-normalized anomaly chain, cross-turn memory, the silent-zero exception (S6), partial-period
+  labelling (S7), the HITL gates (S8 escalation-as-proposal, S9 DRAFT report), and the full report pipeline.
+  Results recorded in `eval/golden_scenarios.md`.
+- ✅ **Named sub-agent spawning verified live.** `subagent_type: carbon-analyst / carbon-accountant /
+  carbon-reporter` spawn and hand off as designed during the S9 run — previously only proven by simulation
+  under the frozen-registry caveat, now confirmed.
+- 📝 The PostToolUse hook's **own** live firing was not separately recorded; S6 confirms the silent-zero
+  *behaviour* (which the skill guarantees, with the hook as the deterministic backstop).
+- 📝 Plugin bumped **0.2.0 → 0.3.0** to carry these wording edits to the Desktop install (Desktop gates its
+  Update button on the `version` string). The eval above ran on the installed **0.2.0**; the 0.3.0 delta is
+  documentation/wording only (plus one cosmetic skill parenthetical), so the results carry forward unchanged.
+- 📝 **This entry is the authoritative current state.**
 
 ---
 We don't go chapter-by-chapter — patterns are pulled in when the use case needs them.

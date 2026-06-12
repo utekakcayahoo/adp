@@ -3,8 +3,8 @@
 The regression script (`run_regression.py`) proves the **tool layer** is correct.
 This file evaluates the **agent's behaviour** on top of those tools: routing, grounding,
 guardrails, memory, and the human-in-the-loop gates. There is no model hook in the
-Cowork/managed-MCP production path (see `docs/observability.md`), so this layer is run by
-**replaying each prompt in a fresh session** (Claude Code or Cowork) with the plugin
+Claude Code on Desktop / managed-MCP production path (see `docs/observability.md`), so this layer is run by
+**replaying each prompt in a fresh session** (Claude Code — terminal or Desktop) with the plugin
 installed and the `adp` MCP authenticated, then scoring the transcript against the rubric.
 
 > Why not automated? The chosen Phase-8 scope is *regression + rubric* (no model-in-the-loop
@@ -85,14 +85,18 @@ installed and the `adp` MCP authenticated, then scoring the transcript against t
 
 | Scenario | Routing | Grounding | Correctness | Guardrails | HITL | Notes |
 |---|---|---|---|---|---|---|
-| S1 |  |  |  |  | n/a |  |
-| S2 |  |  |  |  | n/a |  |
-| S3 |  |  |  |  | n/a |  |
-| S4 |  |  |  |  | n/a |  |
-| S5 |  |  |  |  | n/a |  |
-| S6 |  |  |  |  | n/a |  |
-| S7 |  |  |  |  | n/a |  |
-| S8 | n/a |  | n/a |  |  |  |
-| S9 |  |  |  |  |  |  |
+| S1 | ✅ | ✅ | ✅ | ✅ | n/a | pass |
+| S2 | ✅ | ✅ | ✅ | ✅ | n/a | pass |
+| S3 | ✅ | ✅ | ✅ | ✅ | n/a | pass |
+| S4 | ✅ | ✅ | ✅ | ✅ | n/a | pass |
+| S5 | ✅ | ✅ | ✅ | ✅ | n/a | memory held the facility/period across turns |
+| S6 | ✅ | ✅ | ✅ | ✅ | n/a | silent zero not reported as fact |
+| S7 | ✅ | ✅ | ✅ | ✅ | n/a | partial period labelled |
+| S8 | n/a | ✅ | n/a | ✅ | ✅ | escalation phrased as a proposal |
+| S9 | ✅ | ✅ | ✅ | ✅ | ✅ | team spawned (carbon-analyst ∥ accountant → reporter); DRAFT gate held |
 
-**Run metadata:** date · session (Claude Code / Cowork) · model · plugin version.
+**Run metadata:** date · session (Claude Code — terminal or Desktop) · model · plugin version.
+
+**Last run — 2026-06-12 · Claude Code on Claude Desktop · plugin v0.2.0.** All S1–S9 passed; named
+sub-agent spawning (`carbon-analyst` / `carbon-accountant` / `carbon-reporter`) verified live during S9.
+(Model not separately recorded.)
