@@ -43,7 +43,7 @@ The MCP tools come from `mcp/adp_uc_functions.sql` (see `mcp/MCP.md`).
 > claude plugin marketplace add "$(pwd)"
 > claude plugin install adp-carbon-copilot@adp-carbon-copilot-marketplace
 > ```
-> `claude plugin details adp-carbon-copilot` shows the inventory: **3 skills, 4 agents, the
+> `claude plugin details adp-carbon-copilot` shows the inventory: **3 skills, 3 agents, the
 > PostToolUse hook, and the `adp` MCP**. Installing as a plugin is what **registers the hook** —
 > the symlink method below does not. Start a new session after installing. (The marketplace is a
 > directory snapshot — after editing the repo, run `claude plugin marketplace update
