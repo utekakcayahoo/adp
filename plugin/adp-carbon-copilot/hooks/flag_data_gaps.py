@@ -68,7 +68,7 @@ def main() -> None:
         "DATA-QUALITY GUARDRAIL (Phase 7): "
         + " ".join(notes)
         + " Do NOT report a silent zero as fact. Fall back to the most recent complete "
-        "window, say which one you used, and flag the gap (cite the data-quality standard)."
+        "window, say which one you used, and flag the gap."
     )
     print(json.dumps({
         "hookSpecificOutput": {
